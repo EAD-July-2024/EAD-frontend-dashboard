@@ -1,10 +1,92 @@
-import React, { useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import Select from "react-select";
 
-const AddProductModal = ({ show, onClose, onAddProduct, initialData }) => {
-  const [productData, setProductData] = React.useState(initialData);
+const vendorOptions = [
+  { value: "vendor1", label: "Vendor 1" },
+  { value: "vendor2", label: "Vendor 2" },
+  { value: "vendor3", label: "Vendor 3" },
+];
 
-  // Update product data state on initialData change (for editing)
+const categoryOptions = [
+  { value: "electronics", label: "Electronics" },
+  { value: "clothing", label: "Clothing" },
+  { value: "beauty", label: "Beauty & Personal Care" },
+  { value: "home", label: "Home & Kitchen" },
+];
+
+const AddProductModal = ({
+  show,
+  onClose,
+  onAddProduct,
+  initialData,
+  editModal,
+}) => {
+  const [productData, setProductData] = useState(initialData);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // // Clear the modal values when it closes
+  // const handleModalClose = () => {
+  //   setProductData({});
+  //   setSelectedImages([]);
+  //   onClose();
+  // };
+
+  const handleModalClose = () => {
+    setShowConfirm(true); // Show confirmation modal
+  };
+
+  const handleConfirmClose = () => {
+    setProductData({}); // Clear product data
+    setSelectedImages([]); // Clear selected images
+    setShowConfirm(false); // Hide confirmation modal
+    onClose(); // Close the main modal
+  };
+
+  const handleCancelClose = () => {
+    setShowConfirm(false); // Hide confirmation modal
+  };
+
+  // Handle image upload
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length + selectedImages.length > 5) {
+      alert("You can upload up to 5 images.");
+      return;
+    }
+    const newImages = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setSelectedImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  };
+
+  const handleReplaceImage = (index, e) => {
+    const file = e.target.files[0];
+    const newImages = [...selectedImages];
+    newImages[index] = { file, url: URL.createObjectURL(file) };
+    setSelectedImages(newImages);
+  };
+
+  const handleVendorChange = (selectedOption) => {
+    handleChange({
+      target: { name: "vendor", value: selectedOption?.value || "" },
+    });
+  };
+
+  const handleCategoryChange = (selectedOption) => {
+    handleChange({
+      target: { name: "category", value: selectedOption?.value || "" },
+    });
+  };
+
   useEffect(() => {
     setProductData(initialData);
   }, [initialData]);
@@ -20,189 +102,185 @@ const AddProductModal = ({ show, onClose, onAddProduct, initialData }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
-      <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-        <Modal.Title>
-          {initialData?.id ? "Edit Product" : "Add New Product"}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
-        <Form onSubmit={handleSubmit}>
-          {/* Editable Product ID for Adding New Product */}
-          <Form.Group controlId="productId">
-            <Form.Label>Product ID</Form.Label>
-            <Form.Control
-              type="text"
-              name="id"
-              value={productData?.id || ""}
-              onChange={handleChange}
-              disabled={!!initialData?.id} // Disable if editing
-              required
-            />
-          </Form.Group>
+    <>
+      <Modal show={show} onHide={handleModalClose} size="xl" scrollable>
+        <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
+          <Modal.Title>
+            {initialData?.id ? "Edit Product" : "Add New Product"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              {/* Left Half - Product Details */}
+              <Col md={6}>
+                {editModal === true && (
+                  <Form.Group controlId="productId">
+                    <Form.Label>Product ID</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="id"
+                      value={productData?.id || ""}
+                      onChange={handleChange}
+                      disabled
+                    />
+                  </Form.Group>
+                )}
 
-          <Form.Group controlId="productName" className="mt-2">
-            <Form.Label>Product Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={productData?.name || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+                <Form.Group controlId="productName" className="mt-2">
+                  <Form.Label>Product Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={productData?.name || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
 
-          <Form.Group controlId="vendor" className="mt-2">
-            <Form.Label>Vendor</Form.Label>
-            <Form.Control
-              type="text"
-              name="vendor"
-              value={productData?.vendor || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+                <Form.Group controlId="vendor" className="mt-2">
+                  <Form.Label>Vendor</Form.Label>
+                  <Select
+                    options={vendorOptions}
+                    value={
+                      vendorOptions.find(
+                        (option) => option.value === productData?.vendor
+                      ) || null
+                    }
+                    onChange={handleVendorChange}
+                    isSearchable={true}
+                    placeholder="Select a vendor"
+                  />
+                </Form.Group>
 
-          <Form.Group controlId="price" className="mt-2">
-            <Form.Label>Price</Form.Label>
-            <Form.Control
-              type="number"
-              name="price"
-              value={productData?.price || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+                <Form.Group controlId="category" className="mt-2">
+                  <Form.Label>Category</Form.Label>
+                  <Select
+                    options={categoryOptions}
+                    value={
+                      categoryOptions.find(
+                        (option) => option.value === productData?.category
+                      ) || null
+                    }
+                    onChange={handleCategoryChange}
+                    isSearchable={true}
+                    placeholder="Select a category"
+                  />
+                </Form.Group>
 
-          <Form.Group controlId="rating" className="mt-2">
-            <Form.Label>Rating</Form.Label>
-            <Form.Control
-              as="select"
-              name="rating"
-              value={productData?.rating || 1}
-              onChange={handleChange}
-              required
-            >
-              <option value="1">1 Star</option>
-              <option value="2">2 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="5">5 Stars</option>
-            </Form.Control>
-          </Form.Group>
+                <Form.Group controlId="price" className="mt-2">
+                  <Form.Label>Price</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="price"
+                    value={productData?.price || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-4">
-            {initialData?.id ? "Update" : "Add Product"}
+                <Form.Group controlId="description" className="mt-2">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    name="description"
+                    value={productData?.description || ""}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="status" className="mt-2">
+                  <Form.Label>Status</Form.Label>
+                  <Form.Check
+                    type="switch"
+                    id="status"
+                    name="status"
+                    label={productData?.status ? "Active" : "Inactive"}
+                    checked={productData?.status || false}
+                    onChange={(e) =>
+                      handleChange({
+                        target: {
+                          name: "status",
+                          value: e.target.checked,
+                        },
+                      })
+                    }
+                  />
+                </Form.Group>
+              </Col>
+
+              {/* Right Half - Image Upload */}
+              <Col md={6}>
+                <Form.Group controlId="images" className="mt-2">
+                  <Form.Label>Images (Max 5)</Form.Label>
+                  <Form.Control
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    disabled={selectedImages.length >= 5}
+                  />
+                  <div className="mt-3">
+                    {selectedImages.map((image, index) => (
+                      <div key={index} className="mb-2">
+                        <img
+                          src={image.url}
+                          alt={`Uploaded preview ${index + 1}`}
+                          style={{
+                            width: "200px",
+                            height: "150px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          Remove
+                        </Button>
+                        <Form.Control
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleReplaceImage(index, e)}
+                          style={{ display: "inline-block", width: "200px" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Button variant="primary" type="submit" className="mt-4">
+              {initialData?.id ? "Update" : "Add Product"}
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Confirmation Modal */}
+      <Modal show={showConfirm} onHide={handleCancelClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Close</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to close? Any unsaved changes will be lost.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancelClose}>
+            Cancel
           </Button>
-        </Form>
-      </Modal.Body>
-    </Modal>
+          <Button variant="danger" onClick={handleConfirmClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 
 export default AddProductModal;
-
-// import React, { useState } from "react";
-// import { Modal, Button, Form } from "react-bootstrap";
-
-// const AddProductModal = ({ show, onClose, onAddProduct }) => {
-//   const [productData, setProductData] = useState({
-//     id: "",
-//     name: "",
-//     vendor: "",
-//     price: "",
-//     rating: 1, // Default rating
-//   });
-
-//   // Handle input change
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setProductData((prevData) => ({
-//       ...prevData,
-//       [name]: value,
-//     }));
-//   };
-
-//   // Handle form submission
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     // Call the onAddProduct function passed as a prop
-//     onAddProduct(productData);
-//     // Reset the form
-//     setProductData({ id: "", name: "", vendor: "", price: "", rating: 1 });
-//     // Close the modal
-//     onClose();
-//   };
-
-//   return (
-//     <Modal show={show} onHide={onClose}>
-//       <Modal.Header closeButton>
-//         <Modal.Title>Add New Product</Modal.Title>
-//       </Modal.Header>
-//       <Modal.Body>
-//         <Form onSubmit={handleSubmit}>
-//           <Form.Group controlId="formProductId">
-//             <Form.Label>Product ID</Form.Label>
-//             <Form.Control
-//               type="number"
-//               name="id"
-//               value={productData.id}
-//               onChange={handleChange}
-//               required
-//             />
-//           </Form.Group>
-//           <Form.Group controlId="formProductName">
-//             <Form.Label>Product Name</Form.Label>
-//             <Form.Control
-//               type="text"
-//               name="name"
-//               value={productData.name}
-//               onChange={handleChange}
-//               required
-//             />
-//           </Form.Group>
-//           <Form.Group controlId="formVendor">
-//             <Form.Label>Vendor</Form.Label>
-//             <Form.Control
-//               type="text"
-//               name="vendor"
-//               value={productData.vendor}
-//               onChange={handleChange}
-//               required
-//             />
-//           </Form.Group>
-//           <Form.Group controlId="formPrice">
-//             <Form.Label>Price</Form.Label>
-//             <Form.Control
-//               type="number"
-//               name="price"
-//               value={productData.price}
-//               onChange={handleChange}
-//               required
-//             />
-//           </Form.Group>
-//           <Form.Group controlId="formRating">
-//             <Form.Label>Rating</Form.Label>
-//             <Form.Control
-//               as="select"
-//               name="rating"
-//               value={productData.rating}
-//               onChange={handleChange}
-//             >
-//               <option value="1">1 Star</option>
-//               <option value="2">2 Stars</option>
-//               <option value="3">3 Stars</option>
-//               <option value="4">4 Stars</option>
-//               <option value="5">5 Stars</option>
-//             </Form.Control>
-//           </Form.Group>
-//           <Button variant="primary" type="submit" className="mt-3">
-//             Add Product
-//           </Button>
-//         </Form>
-//       </Modal.Body>
-//     </Modal>
-//   );
-// };
-
-// export default AddProductModal;

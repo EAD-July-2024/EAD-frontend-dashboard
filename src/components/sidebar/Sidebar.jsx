@@ -175,7 +175,7 @@ const Sidebar = ({ children }) => {
 
                   <div className="d-flex-row mx-4">
                     <b className="d-none d-sm-inline ms-1">
-                      Kithmina Siriwardana
+                      {loggedUser && loggedUser.name}
                     </b>
                     {/* <p>kithminasiriwardana@gmail.com</p> */}
                   </div>

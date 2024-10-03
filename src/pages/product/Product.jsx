@@ -13,6 +13,7 @@ const Product = () => {
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
   const [products, setProducts] = useState([]);
+  const [editModal, setEditModal] = useState(false);
   const [productss, setProductss] = useState([
     {
       id: 1,
@@ -116,6 +117,7 @@ const Product = () => {
 
   // Function to handle edit button click
   const handleEdit = (id) => {
+    setEditModal(true);
     const productToEdit = productss.find((product) => product.id === id);
     setNewProductData(productToEdit);
     setEditProductId(id);
@@ -129,10 +131,9 @@ const Product = () => {
   };
 
   const handleAdd = () => {
-    console.log("Add new product button clicked");
-    // Reset the product data to clear the fields
-    setNewProductData({ id: "", name: "", vendor: "", price: "", rating: 1 }); // Reset fields
-    setEditProductId(null); // Ensure edit mode is reset
+    setEditModal(false);
+    setNewProductData({ id: "", name: "", vendor: "", price: "", rating: 1 });
+    setEditProductId(null);
     setShowAddProductModal(true);
   };
 
@@ -190,8 +191,6 @@ const Product = () => {
 
       {/* Table */}
       <div>
-        {/* Product Table */}
-
         <Table
           bordered
           hover
@@ -252,7 +251,8 @@ const Product = () => {
         show={showAddProductModal}
         onClose={() => setShowAddProductModal(false)}
         onAddProduct={handleAddProduct}
-        initialData={newProductData} // Pass the product data to be edited
+        initialData={newProductData}
+        editModal={editModal}
       />
 
       {/* Confirmation of delete product */}
