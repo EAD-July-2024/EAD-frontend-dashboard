@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Button, Col, Row } from "react-bootstrap";
+import { AUTH_URLS } from "../../utils/config";
+import axios from "axios";
+import "./Login.css";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const BottomLinks = () => {
+    return (
+      <Row>
+        <Col xs={12} className="text-center">
+          <p className="text-dark-emphasis">
+            Don't have an account?{" "}
+            <Link
+              to="/auth/register"
+              className="text-dark fw-bold ms-1 link-offset-3 text-decoration-underline"
+            >
+              <b>Sign up</b>
+            </Link>
+          </p>
+        </Col>
+      </Row>
+    );
+  };
+
+  console.log(AUTH_URLS.LOGIN_URL);
+
+  // Handle login function
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (email && password) {
+      await axios
+        .post(AUTH_URLS.LOGIN_URL, {
+          email,
+          password,
+        })
+        .then((response) => {
+          console.log(response.data);
+          localStorage.setItem("auth", JSON.stringify(response.data));
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Something went wrong! Please try again later.");
+        });
+    }
+
+    // // Simple authentication logic (for demonstration purposes)
+    // if (email === "admin" && password === "password") {
+    //   localStorage.setItem("auth", "true");
+    //   navigate("/dashboard");
+    // } else {
+    //   alert("Invalid credentials");
+    // }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-form">
+        <h2 className="login-title">Login</h2>
+        <div className="form-group">
+          <label htmlFor="username">Email</label>
+          <input
+            type="email"
+            id="username"
+            className="form-control"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            className="form-control"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <Button className="login-btn" onClick={handleLogin}>
+          Login
+        </Button>
+        <BottomLinks />
+      </div>
+    </div>
+  );
+};
+
+export default Login;

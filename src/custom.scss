@@ -1,0 +1,67 @@
+// Overwrite theme variables BEFORE importing Bootstrap
+$primary: #14367a;
+$secondary: #67ccd1;
+$success: #125015;
+// $info: #b8c0ff;
+$info: #14a2b8;
+$warning: orange;
+$danger: #b32d00;
+$light: white;
+$dark: black;
+
+// Import Bootstrap after overriding variables
+@import "~bootstrap/scss/bootstrap.scss";
+
+.w-20px {
+  width: 320px !important;
+}
+
+.pl-sidebar {
+  padding-left: 320px !important;
+}
+
+.ml-sidebar {
+  margin-left: 12px !important;
+}
+
+.pl-collaps-sidebar {
+  padding-left: 125px !important;
+}
+
+.ml-collaps-sidebar {
+  margin-left: 12px !important;
+}
+
+.min-h-100vh {
+  min-height: 100vh;
+}
+
+.min-w-100 {
+  min-width: 100%;
+}
+
+.collaps-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  padding: 0px;
+  background-color: #0e2249;
+  border: none;
+  color: white;
+}
+
+.expand-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  padding: 0px;
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: #0e2249;
+  border: none;
+  color: white;
+}
