@@ -3,16 +3,16 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 
 const vendorOptions = [
-  { value: "vendor1", label: "Vendor 1" },
-  { value: "vendor2", label: "Vendor 2" },
-  { value: "vendor3", label: "Vendor 3" },
+  { value: "V0001", label: "Vendor 1" },
+  { value: "V0002", label: "Vendor 2" },
+  { value: "V0003", label: "Vendor 3" },
 ];
 
 const categoryOptions = [
-  { value: "electronics", label: "Electronics" },
-  { value: "clothing", label: "Clothing" },
-  { value: "beauty", label: "Beauty & Personal Care" },
-  { value: "home", label: "Home & Kitchen" },
+  { value: "CAT001", label: "Electronics" },
+  { value: "CAT002", label: "Clothing" },
+  { value: "CAT003", label: "Beauty & Personal Care" },
+  { value: "CAT004", label: "Home & Kitchen" },
 ];
 
 const AddProductModal = ({
@@ -21,31 +21,26 @@ const AddProductModal = ({
   onAddProduct,
   initialData,
   editModal,
+  selectedImages,
+  setSelectedImages,
 }) => {
   const [productData, setProductData] = useState(initialData);
-  const [selectedImages, setSelectedImages] = useState([]);
+  // const [selectedImages, setSelectedImages] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // // Clear the modal values when it closes
-  // const handleModalClose = () => {
-  //   setProductData({});
-  //   setSelectedImages([]);
-  //   onClose();
-  // };
-
   const handleModalClose = () => {
-    setShowConfirm(true); // Show confirmation modal
+    setShowConfirm(true);
   };
 
   const handleConfirmClose = () => {
-    setProductData({}); // Clear product data
-    setSelectedImages([]); // Clear selected images
-    setShowConfirm(false); // Hide confirmation modal
-    onClose(); // Close the main modal
+    setProductData({});
+    setSelectedImages([]);
+    setShowConfirm(false);
+    onClose();
   };
 
   const handleCancelClose = () => {
-    setShowConfirm(false); // Hide confirmation modal
+    setShowConfirm(false);
   };
 
   // Handle image upload
@@ -75,12 +70,17 @@ const AddProductModal = ({
     setSelectedImages(newImages);
   };
 
+  // Handle vendor select
   const handleVendorChange = (selectedOption) => {
     handleChange({
-      target: { name: "vendor", value: selectedOption?.value || "" },
+      target: {
+        name: "vendor",
+        value: selectedOption?.value || "",
+      },
     });
   };
 
+  // Handle category select
   const handleCategoryChange = (selectedOption) => {
     handleChange({
       target: { name: "category", value: selectedOption?.value || "" },
@@ -97,8 +97,10 @@ const AddProductModal = ({
   };
 
   const handleSubmit = (e) => {
+    console.log("SSSSSS: ", productData);
+    console.log("selectedImages: ", selectedImages);
     e.preventDefault();
-    onAddProduct(productData);
+    onAddProduct(productData, selectedImages);
   };
 
   return (
@@ -219,7 +221,7 @@ const AddProductModal = ({
                     multiple
                     accept="image/*"
                     onChange={handleImageChange}
-                    disabled={selectedImages.length >= 5}
+                    disabled={selectedImages && selectedImages.length >= 5}
                   />
                   <div className="mt-3">
                     {selectedImages.map((image, index) => (
