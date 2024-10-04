@@ -28,7 +28,8 @@ const ViewProduct = ({
     "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_0.jpg",
     "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_1.jpg",
     "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_2.jpg",
-    "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_3.jpg",
+    "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_0.jpg",
+    "https://eadbucket.s3.amazonaws.com/ProductImages/P15120_image_2.jpg",
   ];
 
   const [productData, setProductData] = useState(initialData);
@@ -125,40 +126,29 @@ const ViewProduct = ({
             <Row>
               {/* Left Half - Product Details */}
               <Col sm={12} md={12} lg={6}>
-                <div style={{ padding: "0px 60px" }}>
+                <div className="custom-padding-prod-img">
                   <Row>
                     <Col sm={12}>
                       {" "}
                       <img
                         src={selectedImg}
-                        alt={`Uploaded preview`}
-                        style={{
-                          width: "100%",
-                          height: "22vw",
-                          maxHeight: "300px",
-                          borderRadius: "35px",
-                          border: "3px solid #e0e0e0",
-                        }}
+                        alt="Uploaded preview"
+                        class="img-fluid custom-img"
                       />
                     </Col>
                   </Row>
-                  <Row style={{ marginTop: "10px" }} className="g-0">
+                  <Row className="g-0 cmt-10 justify-content-center">
                     {imgURLList.map((imgURL, index) => (
                       <Col
-                        xs={3}
-                        sm={3}
+                        xs={2}
+                        sm={2}
                         key={index}
                         onMouseEnter={() => handleMouseEnter(imgURL)}
                       >
                         <img
                           src={imgURL}
                           alt={`Uploaded preview ${index}`}
-                          style={{
-                            width: "100%",
-                            height: "5vw",
-                            borderRadius: "10px",
-                            border: "3px solid #e0e0e0",
-                          }}
+                          class="img-fluid custom-img-preview"
                         />
                       </Col>
                     ))}
@@ -170,7 +160,7 @@ const ViewProduct = ({
                   {" "}
                   <div className="d-flex flex-row">
                     <p className="product-viewe-title">Product Name </p>
-                    <div style={{ marginTop: "25px" }}>
+                    <div className="cmt-10">
                       {false ? (
                         <span className="product-viewe-title-status-active ">
                           active
@@ -200,9 +190,7 @@ const ViewProduct = ({
                 <Row>
                   {" "}
                   <div className="d-flex flex-row">
-                    <p style={{ fontWeight: "bold" }}>
-                      Available quantity : 4500
-                    </p>{" "}
+                    <p class="fw-bold">Available quantity : 4500</p>{" "}
                   </div>
                 </Row>
                 <Row>
