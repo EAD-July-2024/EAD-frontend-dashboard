@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-const ConfirmModal = ({ show, title, body, onConfirm, onClose }) => {
+const ConfirmModal = ({ show, title, body, onConfirm, onClose, isLoading }) => {
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton>
@@ -10,10 +10,35 @@ const ConfirmModal = ({ show, title, body, onConfirm, onClose }) => {
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
         <Button
-          variant={title.includes("Delete") ? "danger" : "success"}
+          disabled={isLoading}
+          variant={
+            title.includes("Delete") || title.includes("Logout")
+              ? "danger"
+              : "success"
+          }
           onClick={onConfirm}
         >
-          {title.includes("Delete") ? "Delete" : "Confirm"}
+          {/* {title.includes("Delete")
+            ? "Delete"
+            : title.includes("Logout")
+            ? "Logout"
+            : "Confirm"} */}
+
+          {isLoading ? (
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          ) : (
+            `${
+              title.includes("Delete")
+                ? "Delete"
+                : title.includes("Logout")
+                ? "Logout"
+                : "Confirm"
+            }`
+          )}
         </Button>
         <Button variant="secondary" onClick={onClose}>
           Close

@@ -117,7 +117,7 @@ const Product = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery) ||
-      // product.vendor.toLowerCase().includes(searchQuery) ||
+      product.vendor.toLowerCase().includes(searchQuery) ||
       product.price.toString().includes(searchQuery);
 
     const matchesRating = selectedRating
@@ -170,27 +170,16 @@ const Product = () => {
     setShowViewProductModal(true);
   };
 
-  // Pagination states
+  //pagination
+  const itemsPerPage = 2;
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // You can set this to any number of items per page
-
-  // Calculate total pages based on filtered products
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  // Calculate the products for the current page
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Function to handle page change
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+  const handlePageChange = (page) => setCurrentPage(page);
 
   return (
     <div className="px-4 my-4">
@@ -245,118 +234,93 @@ const Product = () => {
             role="status"
           ></div>
         ) : (
-          <>
-            <Table
-              bordered
-              hover
-              style={{ backgroundColor: "#edf2fd" }}
-              className="custom-table"
-            >
-              <thead>
-                <tr>
-                  <th>Product ID</th>
-                  <th>Product Name</th>
-                  <th>Vendor</th>
-                  <th>Price</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentProducts.map((product) => (
-                  <tr
-                    key={product.id}
-                    onClick={() => console.log(product.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.productId}
-                    </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.name}
-                    </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.vendor}
-                    </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.price}
-                    </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.category}
-                    </td>
-                    <td>
-                      <Form.Check
-                        type="switch"
-                        id={`custom-switch-${product.id}`}
-                        label={product.isActive ? "Active" : "Inactive"}
-                        checked={product.isActive}
-                        onChange={() => handleToggleStatus(product.id)}
-                      />
-                    </td>
-                    <td>
-                      <Button
-                        variant="warning"
-                        className="me-2"
-                        onClick={() => handleEdit(product.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        Delete
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-
-            {/* Pagination Controls */}
-            <div
-              className="pagination-controls"
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "10px",
-              }}
-            >
-              <Button
-                style={{
-                  marginLeft: "10px",
-                }}
-                variant="primary"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-              {[...Array(totalPages)].map((_, index) => (
-                <Button
-                  key={index}
-                  variant={currentPage === index + 1 ? "primary" : "light"}
-                  onClick={() => handlePageChange(index + 1)}
-                  style={{
-                    marginLeft: "10px",
-                  }}
+          <Table
+            bordered
+            hover
+            style={{ backgroundColor: "#edf2fd" }}
+            className="custom-table"
+          >
+            <thead>
+              <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Vendor</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map((product) => (
+                <tr
+                  key={product.id}
+                  onClick={() => console.log(product.id)}
+                  style={{ cursor: "pointer" }}
                 >
-                  {index + 1}
-                </Button>
+                  <td
+                    onClick={() => {
+                      handleProductView(product.id);
+                    }}
+                  >
+                    {product.productId}
+                  </td>
+                  <td
+                    onClick={() => {
+                      handleProductView(product.id);
+                    }}
+                  >
+                    {product.name}
+                  </td>
+                  <td
+                    onClick={() => {
+                      handleProductView(product.id);
+                    }}
+                  >
+                    {product.vendor}
+                  </td>
+                  <td
+                    onClick={() => {
+                      handleProductView(product.id);
+                    }}
+                  >
+                    {product.price}
+                  </td>
+                  <td
+                    onClick={() => {
+                      handleProductView(product.id);
+                    }}
+                  >
+                    {product.category}
+                  </td>
+                  <td>
+                    <Form.Check
+                      type="switch"
+                      id={`custom-switch-${product.id}`}
+                      label={product.isActive ? "Active" : "Inactive"}
+                      checked={product.isActive}
+                      onChange={() => handleToggleStatus(product.id)}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      variant="warning"
+                      className="me-2"
+                      onClick={() => handleEdit(product.id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
               ))}
-              <Button
-                style={{
-                  marginLeft: "10px",
-                }}
-                variant="primary"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          </>
+            </tbody>
+          </Table>
         )}
       </div>
 

@@ -7,6 +7,7 @@ import { MdInventory } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdMenu } from "react-icons/io";
 import { Image } from "react-bootstrap";
+import ConfirmModal from "../confirm-modal/ConfirmModal";
 
 const Sidebar = ({ children }) => {
   // const [isOpen, setIsOpen] = useState(true);
@@ -14,6 +15,7 @@ const Sidebar = ({ children }) => {
   const [selectedTab, setSelectedTab] = useState("dashboard");
   const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState();
+  const [showConfirmLogoutModal, setShowConfirmLogoutModal] = useState(false);
 
   // Get the logged user from the local storage
   useEffect(() => {
@@ -70,10 +72,15 @@ const Sidebar = ({ children }) => {
     navigate(redirect);
   };
 
-  //// Handle logout function
+  // Handle logout function
   const logout = () => {
     localStorage.removeItem("auth");
     navigate("/login");
+  };
+
+  //handle confirm logout modal
+  const handleConfirmLogoutModal = () => {
+    setShowConfirmLogoutModal(true);
   };
 
   return (
@@ -187,7 +194,7 @@ const Sidebar = ({ children }) => {
                 alt="logout"
                 width="20"
                 height="20"
-                onClick={logout}
+                onClick={handleConfirmLogoutModal}
               />
               {/* {!isCollapsed && (
                 <span className="d-none d-sm-inline mx-3" onClick={logout}>
@@ -208,6 +215,21 @@ const Sidebar = ({ children }) => {
       >
         {children}
       </div>
+
+      {/* Confirmation of delete Order */}
+      <ConfirmModal
+        show={showConfirmLogoutModal}
+        title="Confirm Logout"
+        body="Are you sure you want to logout from this account?"
+        onConfirm={() => {
+          logout();
+          setShowConfirmLogoutModal(false);
+        }}
+        onClose={() => {
+          console.log("logout cancelled");
+          setShowConfirmLogoutModal(false);
+        }}
+      />
     </div>
   );
 };
