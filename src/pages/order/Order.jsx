@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddOrderModal from "./AddOrder";
-import ViewOrderModal from "./ViewOrder";
+import AddOrderModal from "../../components/order/AddOrder";
+import ViewOrderModal from "../../components/order/ViewOrder";
 
 const Order = () => {
   const [showModal, setShowModal] = useState(false);
