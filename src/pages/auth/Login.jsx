@@ -8,6 +8,7 @@ import "./Login.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const BottomLinks = () => {
@@ -28,10 +29,9 @@ const Login = () => {
     );
   };
 
-  console.log(AUTH_URLS.LOGIN_URL);
-
   // Handle login function
   const handleLogin = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     if (email && password) {
       await axios
@@ -49,14 +49,7 @@ const Login = () => {
           alert("Something went wrong! Please try again later.");
         });
     }
-
-    // // Simple authentication logic (for demonstration purposes)
-    // if (email === "admin" && password === "password") {
-    //   localStorage.setItem("auth", "true");
-    //   navigate("/dashboard");
-    // } else {
-    //   alert("Invalid credentials");
-    // }
+    setIsLoading(false);
   };
 
   return (
@@ -87,8 +80,20 @@ const Login = () => {
             required
           />
         </div>
-        <Button className="login-btn" onClick={handleLogin}>
-          Login
+        <Button
+          className="login-btn"
+          onClick={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          ) : (
+            "Login"
+          )}
         </Button>
         <BottomLinks />
       </div>

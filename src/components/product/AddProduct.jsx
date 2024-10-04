@@ -25,7 +25,6 @@ const AddProductModal = ({
   setSelectedImages,
 }) => {
   const [productData, setProductData] = useState(initialData);
-  // const [selectedImages, setSelectedImages] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleModalClose = () => {
@@ -273,9 +272,9 @@ const AddProductModal = ({
           Are you sure you want to close? Any unsaved changes will be lost.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancelClose}>
+          {/* <Button variant="secondary" onClick={handleCancelClose}>
             Cancel
-          </Button>
+          </Button> */}
           <Button variant="danger" onClick={handleConfirmClose}>
             Close
           </Button>
