@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddProductModal from "./AddProduct";
+import AddProductModal from "../../components/product/AddProduct";
+import ViewProduct from "../../components/product/ViewProduct";
 import { PRODUCT_URLS } from "../../utils/config";
 import axios from "axios";
 
@@ -14,6 +15,7 @@ const Product = () => {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
+  const [showViewProductModal, setShowViewProductModal] = useState(false);
   const [products, setProducts] = useState([]);
   const [editModal, setEditModal] = useState(false);
   const [productss, setProductss] = useState([
@@ -244,11 +246,41 @@ const Product = () => {
           <tbody>
             {filteredProducts.map((product) => (
               <tr key={product.id} onClick={() => console.log(product.id)}>
-                <td>{product.id}</td>
-                <td>{product.name}</td>
-                <td>{product.vendor}</td>
-                <td>{product.price}</td>
-                <td>{product.rating}</td>
+                <td
+                  onClick={() => {
+                    setShowViewProductModal(true);
+                  }}
+                >
+                  {product.id}
+                </td>
+                <td
+                  onClick={() => {
+                    setShowViewProductModal(true);
+                  }}
+                >
+                  {product.name}
+                </td>
+                <td
+                  onClick={() => {
+                    setShowViewProductModal(true);
+                  }}
+                >
+                  {product.vendor}
+                </td>
+                <td
+                  onClick={() => {
+                    setShowViewProductModal(true);
+                  }}
+                >
+                  {product.price}
+                </td>
+                <td
+                  onClick={() => {
+                    setShowViewProductModal(true);
+                  }}
+                >
+                  {product.rating}
+                </td>
                 <td>
                   <Form.Check
                     type="switch"
@@ -283,6 +315,16 @@ const Product = () => {
       <AddProductModal
         show={showAddProductModal}
         onClose={() => setShowAddProductModal(false)}
+        onAddProduct={handleAddProduct}
+        initialData={newProductData}
+        editModal={editModal}
+        selectedImages={selectedImages}
+        setSelectedImages={setSelectedImages}
+      />
+
+      <ViewProduct
+        show={showViewProductModal}
+        onClose={() => setShowViewProductModal(false)}
         onAddProduct={handleAddProduct}
         initialData={newProductData}
         editModal={editModal}
