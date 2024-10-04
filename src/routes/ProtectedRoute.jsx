@@ -22,15 +22,15 @@ const ProtectedRoute = ({ requiredRole }) => {
   // Check if the user has the required role (if specified)
   const hasRequiredRole = !requiredRole || (auth && auth.role === requiredRole);
 
-  // if (!isAuthenticated) {
-  //   // Redirect to login if not authenticated
-  //   return <Navigate to="/login" />;
-  // }
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" />;
+  }
 
-  // if (!hasRequiredRole) {
-  //   // Redirect to a "not authorized" page or some other appropriate action if the role is insufficient
-  //   return <Navigate to="/not-authorized" />;
-  // }
+  if (!hasRequiredRole) {
+    // Redirect to a "not authorized" page or some other appropriate action if the role is insufficient
+    return <Navigate to="/not-authorized" />;
+  }
 
   // If authenticated and has the required role, render the layout with Outlet for nested routes
   return (
