@@ -1,65 +1,38 @@
-// Import Firebase scripts
-importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js");
+// Give the service worker access to Firebase Messaging.
+// Note that you can only use Firebase Messaging here. Other Firebase libraries
+// are not available in the service worker.
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
+);
 
-// Initialize Firebase in the service worker
+// Initialize the Firebase app in the service worker by passing in
+// your app's Firebase config object.
+// https://firebase.google.com/docs/web/setup#config-object
 firebase.initializeApp({
-  apiKey: "AIzaSyBgf-3G4kmLlR3Hvxsgok8DtKmSEjewsys",
-  authDomain: "ead-e-commerce-ee253.firebaseapp.com",
-  projectId: "ead-e-commerce-ee253",
-  storageBucket: "ead-e-commerce-ee253.appspot.com",
-  messagingSenderId: "863513370048",
-  appId: "1:863513370048:web:dda120a7d6f169c1cd7c25",
-  measurementId: "G-K4P5LBQDXF",
+  apiKey: "AIzaSyCyifgIjCeo5jHF1by1SuyYA2mM_rN-hiw",
+  authDomain: "pushnotifications-fb14a.firebaseapp.com",
+  projectId: "pushnotifications-fb14a",
+  storageBucket: "pushnotifications-fb14a.appspot.com",
+  messagingSenderId: "924046382081",
+  appId: "1:924046382081:web:14dec6415ec0803d9e5c00",
 });
 
-// Retrieve Firebase Messaging object
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
 const messaging = firebase.messaging();
 
-// Handle background notifications
-messaging.onBackgroundMessage(function (payload) {
+messaging.onBackgroundMessage((payload) => {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
     payload
   );
-
-  // Customize the notification here
+  // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: "/firebase-logo.png", // Ensure this path is correct
+    icon: payload.notification.image,
   };
 
-  // Display the notification
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
-// importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js");
-// importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js");
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBgf-3G4kmLlR3Hvxsgok8DtKmSEjewsys",
-//   authDomain: "ead-e-commerce-ee253.firebaseapp.com",
-//   projectId: "ead-e-commerce-ee253",
-//   storageBucket: "ead-e-commerce-ee253.appspot.com",
-//   messagingSenderId: "863513370048",
-//   appId: "1:863513370048:web:dda120a7d6f169c1cd7c25",
-//   measurementId: "G-K4P5LBQDXF",
-// };
-
-// const messaging = firebase.messaging();
-
-// messaging.onBackgroundMessage(function (payload) {
-//   console.log(
-//     "[firebase-messaging-sw.js] Received background message ",
-//     payload
-//   );
-
-//   const notificationTitle = payload.notification.title;
-//   const notificationOptions = {
-//     body: payload.notification.body,
-//     icon: "/firebase-logo.png",
-//   };
-
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
