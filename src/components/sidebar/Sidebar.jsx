@@ -163,15 +163,24 @@ const Sidebar = ({ children }) => {
           </ul>
           <hr />
           <div className="p-4 w-100">
-            <a
+            <div
               href="#"
-              className="d-flex align-items-center text-white text-decoration-none"
+              className="d-flex  align-items-center text-white text-decoration-none"
               id="dropdownUser1"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               {!isCollapsed && (
-                <>
+                <a
+                  href="/profile"
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    display: "flex",
+                    flexDirection: "row",
+                    marginRight: "40px",
+                  }}
+                >
                   <img
                     src="https://github.com/mdo.png"
                     alt="hugenerd"
@@ -182,11 +191,11 @@ const Sidebar = ({ children }) => {
 
                   <div className="d-flex-row mx-4">
                     <b className="d-none d-sm-inline ms-1">
-                      {loggedUser && loggedUser.name}
+                      {loggedUser && loggedUser.name}shehan
                     </b>
                     {/* <p>kithminasiriwardana@gmail.com</p> */}
                   </div>
-                </>
+                </a>
               )}
 
               <Image
@@ -201,7 +210,7 @@ const Sidebar = ({ children }) => {
                   Logout
                 </span>
               )} */}
-            </a>
+            </div>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import Inventory from "./pages/inventory/Inventory";
 import Vendor from "./pages/vendor/Vendor";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import NotAuthorized from "./pages/NotAuthorized";
+import Profile from "./pages/profile/Profile";
 import "./custom.scss";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/product" element={<Product />} />
           <Route path="/order" element={<Order />} />
           <Route path="/vendor" element={<Vendor />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Protected route for admin only */}
