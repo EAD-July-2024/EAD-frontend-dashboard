@@ -3,7 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 
 const ConfirmModal = ({ show, title, body, onConfirm, onClose, isLoading }) => {
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show={show} onHide={onClose} backdrop={true}>
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
