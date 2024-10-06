@@ -5,12 +5,12 @@ import { generateToken, messaging } from "../../notifications/firebase";
 import { onMessage } from "firebase/messaging";
 
 const Dashboard = () => {
-  useEffect(() => {
-    generateToken();
-    onMessage(messaging, (payload) => {
-      console.log("Message received: ", payload);
-    });
-  }, []);
+  // useEffect(() => {
+  //   generateToken();
+  //   onMessage(messaging, (payload) => {
+  //     console.log("Message received: ", payload);
+  //   });
+  // }, []);
 
   return (
     <div>

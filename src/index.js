@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
@@ -13,6 +13,8 @@ import Profile from "./pages/profile/Profile";
 import "./custom.scss";
 
 const App = () => {
+  const isFirebaseInitialized = useRef(false);
+
   return (
     <Router>
       <Routes>
