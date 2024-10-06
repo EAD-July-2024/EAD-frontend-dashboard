@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddVendorModal from "./AddVendor";
+import AddVendorModal from "../../components/vendor/AddVendor";
+import ViewVendorModal from "../../components/vendor/ViewVendor";
 
 const Vendor = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRating, setSelectedRating] = useState();
   const [showAddVendorModal, setShowAddVendorModal] = useState(false);
+  const [showVendorModal, setShowVendorModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
   const [vendors, setVendors] = useState([
@@ -16,7 +18,7 @@ const Vendor = () => {
       id: 1,
       name: "Vendor 1",
       rating: 1,
-      productIds: [1, 2, 3],
+      country: "Sri lanka",
       comments: [
         {
           cusId: 1,
@@ -36,7 +38,7 @@ const Vendor = () => {
       id: 2,
       name: "Vendor 2",
       rating: 2,
-      productIds: [5, 12, 4],
+      country: "China",
       comments: [
         {
           cusId: 1,
@@ -56,7 +58,7 @@ const Vendor = () => {
       id: 3,
       name: "Vendor 3",
       rating: 5,
-      productIds: [7, 5, 1, 9, 5],
+      country: "Japan",
       comments: [
         {
           cusId: 1,
@@ -92,6 +94,9 @@ const Vendor = () => {
     }
   };
 
+  const handleVendorViewModal = (vendor) => {
+    setShowVendorModal(!showVendorModal);
+  };
   const handleAddVendorOnConfirm = () => {
     console.log("Adding new vendor", newVendorData);
     setVendors((prevVendors) => [...prevVendors, newVendorData]);
@@ -213,18 +218,18 @@ const Vendor = () => {
             <tr>
               <th>Vendor ID</th>
               <th>Vendor Name</th>
-              <th>Product IDs</th>
+              <th>Country</th>
               <th>Rating</th>
-              <th>Actions</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {filteredVendors.map((vendor) => (
               <tr key={vendor.id} onClick={() => console.log(vendor.id)}>
-                <td>{vendor.id}</td>
-                <td>{vendor.name}</td>
-                <td>{vendor.productIds.join(", ")}</td>
-                <td>{vendor.rating}</td>
+                <td onClick={handleVendorViewModal}>{vendor.id}</td>
+                <td onClick={handleVendorViewModal}>{vendor.name}</td>
+                <td onClick={handleVendorViewModal}>{vendor.country}</td>
+                <td onClick={handleVendorViewModal}>{vendor.rating}</td>
                 <td>
                   <Button
                     variant="warning"
@@ -253,6 +258,8 @@ const Vendor = () => {
         onAddVendor={handleAddVendor}
         initialData={newVendorData} // Pass the vendor data to be edited
       />
+
+      <ViewVendorModal show={showVendorModal} onClose={handleVendorViewModal} />
 
       {/* Confirmation of delete vendor */}
       <ConfirmModal

@@ -221,7 +221,7 @@ const Order = () => {
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="">Filter by Status</option>
+            <option value="">All</option>
             <option value="processing">Processing</option>
             <option value="dispatched">Dispatched</option>
             <option value="delivered">Delivered</option>
@@ -246,7 +246,6 @@ const Order = () => {
               <th>Total Price</th>
               <th>Placed Date</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -257,39 +256,6 @@ const Order = () => {
                 <td>{Order.total}</td>
                 <td>{Order.placed_date}</td>
                 <td>{Order.status}</td>
-
-                <td>
-                  <Button
-                    disabled={Order.status === "Cancelled"}
-                    variant="secondary"
-                    className="me-2"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents the click from bubbling up to the row
-                      handleCancel(Order.id);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="warning"
-                    className="me-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEdit(Order.id);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(Order.id);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </td>
               </tr>
             ))}
           </tbody>

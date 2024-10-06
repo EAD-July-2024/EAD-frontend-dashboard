@@ -29,17 +29,6 @@ const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
       <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
         <Form onSubmit={handleSubmit}>
           {/* Editable Vendor ID for Adding New Vendor */}
-          <Form.Group controlId="vendorId">
-            <Form.Label>Vendor ID</Form.Label>
-            <Form.Control
-              type="text"
-              name="id"
-              value={vendorData?.id || ""}
-              onChange={handleChange}
-              disabled={!!initialData?.id} // Disable if editing
-              required
-            />
-          </Form.Group>
 
           <Form.Group controlId="vendorName" className="mt-2">
             <Form.Label>Vendor Name</Form.Label>
@@ -53,7 +42,7 @@ const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
           </Form.Group>
 
           <Form.Group controlId="vendor" className="mt-2">
-            <Form.Label>Vendor</Form.Label>
+            <Form.Label>Country</Form.Label>
             <Form.Control
               type="text"
               name="vendor"
@@ -64,7 +53,7 @@ const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
           </Form.Group>
 
           <Form.Group controlId="price" className="mt-2">
-            <Form.Label>Price</Form.Label>
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="number"
               name="price"
@@ -75,7 +64,7 @@ const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
           </Form.Group>
 
           <Form.Group controlId="rating" className="mt-2">
-            <Form.Label>Rating</Form.Label>
+            <Form.Label>Status</Form.Label>
             <Form.Control
               as="select"
               name="rating"
@@ -83,11 +72,8 @@ const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
               onChange={handleChange}
               required
             >
-              <option value="1">1 Star</option>
-              <option value="2">2 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="5">5 Stars</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </Form.Control>
           </Form.Group>
 
