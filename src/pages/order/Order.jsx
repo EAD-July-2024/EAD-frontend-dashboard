@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddOrderModal from "../../components/order/AddOrder";
 import ViewOrderModal from "../../components/order/ViewOrder";
+import axios from "axios";
+import { ORDER_URLS } from "../../utils/config";
 
 const Order = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,60 +19,24 @@ const Order = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const [Orders, setOrders] = useState([
-    {
-      id: 1,
-      name: "Order 1",
-      total: 100,
-      status: "Processing",
-      placed_date: "2021-10-10",
-      products: [
-        { id: 1, name: "Product 1", price: 50, quantity: 2 },
-        { id: 2, name: "Product 2", price: 50, quantity: 7 },
-        { id: 13, name: "Product 13", price: 50, quantity: 1 },
-        { id: 14, name: "Product 14", price: 60, quantity: 20 },
-      ],
-    },
-    {
-      id: 2,
-      name: "Order 2",
-      total: 150,
-      status: "Dispatched",
-      placed_date: "2021-10-10",
-      products: [
-        { id: 3, name: "Product 3", price: 50, quantity: 2 },
-        { id: 8, name: "Product 8", price: 50, quantity: 2 },
-        { id: 5, name: "Product 5", price: 50, quantity: 2 },
-      ],
-    },
-    {
-      id: 3,
-      name: "Order 3",
-      total: 200,
-      status: "Delivered",
-      placed_date: "2021-10-10",
-      products: [
-        { id: 6, name: "Product 6", price: 50, quantity: 6 },
-        { id: 11, name: "Product 11", price: 50, quantity: 1 },
-        { id: 4, name: "Product 4", price: 50, quantity: 4 },
-        { id: 9, name: "Product 9", price: 50, quantity: 2 },
-      ],
-    },
-    {
-      id: 4,
-      name: "Order 4",
-      total: 260,
-      status: "Cancelled",
-      placed_date: "2021-10-10",
-      products: [
-        { id: 10, name: "Product 10", price: 50, quantity: 2 },
-        { id: 7, name: "Product 7", price: 50, quantity: 10 },
-        { id: 12, name: "Product 12", price: 50, quantity: 5 },
-      ],
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
   const [newOrderData, setNewOrderData] = useState(null);
   const [editOrderId, setEditOrderId] = useState(null);
+
+  // Get all Orders
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(ORDER_URLS.ORDER_GET_ALL_URL);
+      const modifiedOrders = response.data.map(({ id, ...rest }) => rest);
+      setOrders(modifiedOrders);
+    } catch (error) {
+      console.error("Error fetching Orders", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   // Function to handle adding a new Order or editing an existing one
   const handleAddOrder = (Order) => {
@@ -97,7 +63,7 @@ const Order = () => {
     console.log("Cancelling existing Order:", cancelOrderId);
 
     // Find the order to cancel
-    const orderToCancel = Orders.find((p) => p.id === cancelOrderId);
+    const orderToCancel = orders.find((p) => p.id === cancelOrderId);
 
     if (!orderToCancel) {
       console.error("Order not found!");
@@ -133,12 +99,13 @@ const Order = () => {
   };
 
   // Function to filter Orders based on search query and rating
-  const filteredOrders = Orders.filter((Order) => {
+  const filteredOrders = orders.filter((Order) => {
     if (!Order) return false;
 
     const matchesSearch =
-      Order.name.toLowerCase().includes(searchQuery) ||
-      Order.total.toString().includes(searchQuery);
+      Order.totalPrice.toString().includes(searchQuery) ||
+      Order.orderId.toString().includes(searchQuery) ||
+      Order.customerId.toString().includes(searchQuery);
 
     const matchesStatus = selectedStatus
       ? Order.status.toLowerCase() === selectedStatus.toLowerCase()
@@ -155,7 +122,7 @@ const Order = () => {
 
   // Function to handle edit button click
   const handleEdit = (id) => {
-    const OrderToEdit = Orders.find((Order) => Order.id === id);
+    const OrderToEdit = orders.find((Order) => Order.id === id);
     setNewOrderData(OrderToEdit);
     setEditOrderId(id);
     setShowAddOrderModal(true); // Open the modal
@@ -242,7 +209,7 @@ const Order = () => {
           <thead>
             <tr>
               <th>Order ID</th>
-              <th>Order Name</th>
+              <th>Customer ID</th>
               <th>Total Price</th>
               <th>Placed Date</th>
               <th>Status</th>
@@ -250,11 +217,13 @@ const Order = () => {
           </thead>
           <tbody>
             {filteredOrders.map((Order) => (
-              <tr key={Order.id} onClick={() => handleViewDetails(Order)}>
-                <td>{Order.id}</td>
-                <td>{Order.name}</td>
-                <td>{Order.total}</td>
-                <td>{Order.placed_date}</td>
+              <tr key={Order.orderid} onClick={() => handleViewDetails(Order)}>
+                <td>{Order.orderId}</td>
+                <td>{Order.customerId}</td>
+                <td>{Order.totalPrice}</td>
+                <td>
+                  {new Date(Order.createdDate).toISOString().split("T")[0]}
+                </td>
                 <td>{Order.status}</td>
               </tr>
             ))}

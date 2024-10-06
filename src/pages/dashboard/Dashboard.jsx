@@ -1,17 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { useEffect } from "react";
-import { generateToken, messaging } from "../../notifications/firebase";
-import { onMessage } from "firebase/messaging";
 
 const Dashboard = () => {
-  // useEffect(() => {
-  //   generateToken();
-  //   onMessage(messaging, (payload) => {
-  //     console.log("Message received: ", payload);
-  //   });
-  // }, []);
-
   return (
     <div>
       <h1>Dashboard</h1>

@@ -1,7 +1,7 @@
 import { getMessaging, getToken } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
-import { FCM_URLS } from "../utils/config";
 import axios from "axios";
+import { FCM_URLS } from "../utils/config";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCyifgIjCeo5jHF1by1SuyYA2mM_rN-hiw",
@@ -20,6 +20,13 @@ export const generateToken = async () => {
   const permission = await Notification.requestPermission();
   console.log(permission);
 
+  const auth = JSON.parse(localStorage.getItem("auth"));
+  const userId = auth.userId;
+  const userRole = auth.role;
+
+  console.log("userId: ", userId);
+  console.log("userRole: ", userRole);
+
   if (permission === "granted") {
     const token = await getToken(messaging, {
       vapidKey:
@@ -27,17 +34,18 @@ export const generateToken = async () => {
     });
 
     console.log(token);
+    localStorage.setItem("fcm_token", JSON.stringify(token));
 
     axios
       .post(FCM_URLS.FCM_TOKEN_CREATE_URL, {
-        token,
+        userId: userId,
+        fcmToken: token,
       })
       .then((response) => {
-        console.log("FCM Token send successfully");
-        console.log(response);
+        console.log("Token saved successfully", response);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error saving token", error);
       });
   }
 };
