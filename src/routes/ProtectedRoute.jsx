@@ -9,11 +9,14 @@
 
 // export default ProtectedRoute;
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Layout from "../Layout";
+import { generateToken, messaging } from "../notifications/firebase";
+import { onMessage } from "firebase/messaging";
 
 const ProtectedRoute = ({ requiredRole }) => {
+  const isFirbaseMessageInitialized = useRef(false);
   const auth = JSON.parse(localStorage.getItem("auth"));
 
   // Check if the user is authenticated
@@ -21,6 +24,16 @@ const ProtectedRoute = ({ requiredRole }) => {
 
   // Check if the user has the required role (if specified)
   const hasRequiredRole = !requiredRole || (auth && auth.role === requiredRole);
+
+  useEffect(() => {
+    if (isAuthenticated && !isFirbaseMessageInitialized.current) {
+      isFirbaseMessageInitialized.current = false;
+      generateToken();
+      onMessage(messaging, (payload) => {
+        console.log("Message received: ", payload);
+      });
+    }
+  }, []);
 
   // if (!isAuthenticated) {
   //   // Redirect to login if not authenticated
