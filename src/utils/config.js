@@ -14,3 +14,8 @@ export const PRODUCT_URLS = {
 };
 
 export default BACKEND_API_URL;
+
+//FCM Token
+export const FCM_URLS = {
+  FCM_TOKEN_CREATE_URL: `${BACKEND_API_URL}/api/fcm-token/store`,
+};

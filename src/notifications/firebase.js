@@ -1,5 +1,7 @@
 import { getMessaging, getToken } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
+import { FCM_URLS } from "../utils/config";
+import axios from "axios";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCyifgIjCeo5jHF1by1SuyYA2mM_rN-hiw",
@@ -23,6 +25,19 @@ export const generateToken = async () => {
       vapidKey:
         "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
     });
+
     console.log(token);
+
+    axios
+      .post(FCM_URLS.FCM_TOKEN_CREATE_URL, {
+        token,
+      })
+      .then((response) => {
+        console.log("FCM Token send successfully");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 };
