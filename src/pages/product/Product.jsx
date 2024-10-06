@@ -69,7 +69,7 @@ const Product = () => {
       formData.append("price", newProductData.price);
       formData.append("categoryID", newProductData.category);
       formData.append("vendorID", newProductData.vendor);
-      formData.append("isActive", newProductData.status);
+      // formData.append("isActive", newProductData.status);
 
       // Append image files if you have any
       selectedImages.forEach((image) => {
@@ -94,11 +94,42 @@ const Product = () => {
     setIsLoading(false);
   };
 
-  const handleEditProductOnConfirm = () => {
+  const handleEditProductOnConfirm = async () => {
     console.log("Updating exsisting product", newProductData);
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => (p.id === newProductData.id ? newProductData : p))
-    );
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("name", newProductData.name);
+      formData.append("description", newProductData.description);
+      formData.append("price", newProductData.price);
+      formData.append("categoryID", newProductData.category);
+      formData.append("productId", newProductData.productId);
+      formData.append("vendorID", newProductData.vendor);
+      // formData.append("isActive", newProductData.status);
+
+      // Append image files if you have any
+      selectedImages.forEach((image) => {
+        formData.append("images", image.file);
+      });
+
+      await axios
+        .put(PRODUCT_URLS.PRODUCT_UPDATE_URL, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Product added successfully:", response.data);
+          setShowAddProductModal(false);
+          setIsProductUpdated(true);
+        });
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to add product. Please try again.");
+    }
+    setIsLoading(false);
+
     setEditProductId(null); // Reset edit mode
     setShowAddProductModal(false);
   };
@@ -109,9 +140,9 @@ const Product = () => {
   };
 
   // Function to handle category filter change
-  const handleRatingChange = (e) => {
-    setSelectedRating(e.target.value);
-  };
+  // const handleRatingChange = (e) => {
+  //   setSelectedRating(e.target.value);
+  // };
 
   // Function to filter products based on search query and category
   const filteredProducts = products.filter((product) => {
@@ -139,7 +170,32 @@ const Product = () => {
   // Function to handle delete button click
   const handleDelete = (id) => {
     console.log(`Delete product with ID: ${id}`);
+    setEditProductId(id);
     setShowModal(true);
+  };
+
+  // Function to handle delete confirmation ///////////////////////////////////// Check this /////////////////////////////////////
+  const handleDeleteConfirm = () => {
+    console.log("Delete confirmed");
+
+    axios
+      .put(PRODUCT_URLS.PRODUCT_DELETE_URL, {
+        data: {
+          productId: editProductId,
+          vendorId: "VEND609551",
+          isDeleted: true,
+        },
+      })
+      .then((response) => {
+        console.log("Product deleted successfully:", response.data);
+        setIsProductUpdated(true);
+      })
+      .catch((error) => {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product. Please try again.");
+      });
+
+    setShowModal(false);
   };
 
   const handleAdd = () => {
@@ -221,7 +277,7 @@ const Product = () => {
           />
 
           {/* Filter by Rating */}
-          <select
+          {/* <select
             className="form-select w-25"
             value={selectedRating}
             onChange={handleRatingChange}
@@ -232,7 +288,7 @@ const Product = () => {
             <option value="3">3 Stars</option>
             <option value="4">4 Stars</option>
             <option value="5">5 Stars</option>
-          </select>
+          </select> */}
         </div>
       </div>
 
@@ -256,10 +312,10 @@ const Product = () => {
                 <tr>
                   <th>Product ID</th>
                   <th>Product Name</th>
-                  <th>Vendor</th>
+                  <th>Vendor </th>
                   <th>Price</th>
                   <th>Category</th>
-                  <th>Status</th>
+                  {/* <th>Status</th> */}
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -277,15 +333,15 @@ const Product = () => {
                       {product.name}
                     </td>
                     <td onClick={() => handleProductView(product.id)}>
-                      {product.vendor}
+                      {product.vendorName}
                     </td>
                     <td onClick={() => handleProductView(product.id)}>
                       {product.price}
                     </td>
                     <td onClick={() => handleProductView(product.id)}>
-                      {product.category}
+                      {product.categoryName}
                     </td>
-                    <td>
+                    {/* <td>
                       <Form.Check
                         type="switch"
                         id={`custom-switch-${product.id}`}
@@ -293,7 +349,7 @@ const Product = () => {
                         checked={product.isActive}
                         onChange={() => handleToggleStatus(product.id)}
                       />
-                    </td>
+                    </td> */}
                     <td>
                       <Button
                         variant="warning"
@@ -388,8 +444,7 @@ const Product = () => {
         title="Delete Product"
         body="Are you sure you want to delete this product?"
         onConfirm={() => {
-          console.log("Delete confirmed");
-          setShowModal(false);
+          handleDeleteConfirm();
         }}
         onClose={() => {
           console.log("Delete cancelled");

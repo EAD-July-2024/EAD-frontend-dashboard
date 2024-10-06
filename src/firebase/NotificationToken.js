@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { messaging } from "../firebaseConfig";
 import { getToken } from "firebase/messaging";
+import axios from "axios";
+import { FCM_URLS } from "../utils/config";
 
 const vapidKey =
   "BEMh1p1u6EXLsWXZwwHlW7fTujSPc5KGIsAGsVQmks2ognVsAEeXmIu2wB2ErctNnNl4yhigZmx0WXrUTSWXS4E";
@@ -16,7 +18,16 @@ const NotificationToken = () => {
       if (currentToken) {
         console.log("FCM Token: ", currentToken);
         setToken(currentToken);
-        // Here you can send the token to your backend via an API call
+        // axios
+        //   .post(FCM_URLS.FCM_TOKEN_CREATE_URL, {
+        //     token: currentToken,
+        //   })
+        //   .then((response) => {
+        //     console.log("Token saved successfully", response);
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error saving token", error);
+        //   });
       } else {
         console.log(
           "No registration token available. Request permission to generate one."

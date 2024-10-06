@@ -27,6 +27,8 @@ const AddProductModal = ({
   const [productData, setProductData] = useState(initialData);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  console.log("initialData: ", productData);
+
   const handleModalClose = () => {
     setShowConfirm(true);
   };
@@ -139,13 +141,28 @@ const AddProductModal = ({
                   />
                 </Form.Group>
 
+                {/* <Form.Group controlId="vendor" className="mt-2">
+                  <Form.Label>Vendor</Form.Label>
+                  <Select
+                    options={vendorOptions}
+                    value={
+                      vendorOptions.find(
+                        (option) => option.value === productData?.vendorName
+                      ) || null
+                    }
+                    onChange={handleVendorChange}
+                    isSearchable={true}
+                    placeholder="Select a vendor"
+                  />
+                </Form.Group> */}
+
                 <Form.Group controlId="vendor" className="mt-2">
                   <Form.Label>Vendor</Form.Label>
                   <Select
                     options={vendorOptions}
                     value={
                       vendorOptions.find(
-                        (option) => option.value === productData?.vendor
+                        (option) => option.value === productData?.vendorName
                       ) || null
                     }
                     onChange={handleVendorChange}

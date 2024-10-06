@@ -11,11 +11,22 @@ export const PRODUCT_URLS = {
   PRODUCT_CREATE_URL: `${BACKEND_API_URL}/api/product`,
   PRODUCT_GET_ALL_URL: `${BACKEND_API_URL}/api/product`,
   PRODUCT_GET_BY_ID_URL: `${BACKEND_API_URL}/api/product`,
+  PRODUCT_UPDATE_URL: `${BACKEND_API_URL}/api/product/update`,
+  PRODUCT_DELETE_URL: `${BACKEND_API_URL}/api/product/productDelete`,
 };
-
-export default BACKEND_API_URL;
 
 //FCM Token
 export const FCM_URLS = {
   FCM_TOKEN_CREATE_URL: `${BACKEND_API_URL}/api/fcm-token/store`,
 };
+
+// Order
+export const ORDER_URLS = {
+  ORDER_CREATE_URL: `${BACKEND_API_URL}/api/order`,
+  ORDER_GET_ALL_URL: `${BACKEND_API_URL}/api/order`,
+  ORDER_GET_BY_ID_URL: `${BACKEND_API_URL}/api/order`,
+  ORDER_UPDATE_URL: `${BACKEND_API_URL}/api/order/update`,
+  ORDER_DELETE_URL: `${BACKEND_API_URL}/api/order/orderDelete`,
+};
+
+export default BACKEND_API_URL;
