@@ -58,6 +58,13 @@ const Sidebar = ({ children }) => {
       label: "Inventory Management",
       tab: "inventory",
     });
+
+    sidebarItems.push({
+      icon: <MdInventory />,
+      redirect: "/category",
+      label: "Category Management",
+      tab: "category",
+    });
   }
 
   // Conditionally include the "Customer Management" tab for admins and CSR

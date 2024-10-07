@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
@@ -11,6 +11,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import NotAuthorized from "./pages/NotAuthorized";
 import Profile from "./pages/profile/Profile";
 import Customer from "./pages/customer/Customer";
+import Category from "./pages/category/Category";
 import "./custom.scss";
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
         {/* Protected route for admin only */}
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/category" element={<Category />} />
         </Route>
 
         {/* Default route to redirect to login */}

@@ -1,5 +1,5 @@
-// const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL;
-const BACKEND_API_URL = "http://localhost:5033";
+const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL;
+// const BACKEND_API_URL = "http://localhost:5033";
 
 // Auth
 export const AUTH_URLS = {

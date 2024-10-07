@@ -24,10 +24,13 @@ export const generateToken = async () => {
   const userId = auth.userId;
   const userRole = auth.role;
 
+  const vapidKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
+
+  // "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
+
   if (permission === "granted") {
     const token = await getToken(messaging, {
-      vapidKey:
-        "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
+      vapidKey,
     });
 
     // console.log(token);
@@ -39,7 +42,7 @@ export const generateToken = async () => {
         fcmToken: token,
       })
       .then((response) => {
-        // console.log("Token saved successfully", response);
+        console.log("Token saved successfully", response);
       })
       .catch((error) => {
         // console.error("Error saving token", error);

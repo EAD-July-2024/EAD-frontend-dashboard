@@ -2,14 +2,13 @@
 import { useEffect, useState } from "react";
 import { messaging } from "../firebaseConfig";
 import { getToken } from "firebase/messaging";
-import axios from "axios";
-import { FCM_URLS } from "../utils/config";
 
-const vapidKey =
-  "BEMh1p1u6EXLsWXZwwHlW7fTujSPc5KGIsAGsVQmks2ognVsAEeXmIu2wB2ErctNnNl4yhigZmx0WXrUTSWXS4E";
+// const vapidKey =
+//   "BEMh1p1u6EXLsWXZwwHlW7fTujSPc5KGIsAGsVQmks2ognVsAEeXmIu2wB2ErctNnNl4yhigZmx0WXrUTSWXS4E";
 
 const NotificationToken = () => {
   const [token, setToken] = useState("");
+  const vapidKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
 
   // Request permission and get the token
   const requestPermission = async () => {
