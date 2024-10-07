@@ -2,74 +2,76 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddProductModal from "../../components/product/AddProduct";
-import ViewProduct from "../../components/product/ViewProduct";
-import { PRODUCT_URLS } from "../../utils/config";
+import AddCustomerModal from "../../components/customer/AddCustomer";
+import ViewCustomerModal from "../../components/customer/ViewCustomer";
+import { PRODUCT_URLS, USER_URLS } from "../../utils/config";
 import axios from "axios";
 
-const Product = () => {
+const Customer = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRating, setSelectedRating] = useState();
+  const [selectedStatus, setSelectedStatus] = useState();
   const [selectedImages, setSelectedImages] = useState([]);
-  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
-  const [showViewProductModal, setShowViewProductModal] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [showViewCustomerModal, setShowViewCustomerModal] = useState(false);
+  const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
-  const [newProductData, setNewProductData] = useState(null);
-  const [editProductId, setEditProductId] = useState(null);
-  const [isProductUpdated, setIsProductUpdated] = useState(false);
+  const [newCustomerData, setNewCustomerData] = useState(null);
+  const [editCustomerId, setEditCustomerId] = useState(null);
+  const [isCustomerUpdated, setIsCustomerUpdated] = useState(false);
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  // Function to handle product fetch
-  const fetchProducts = async () => {
+  // Function to handle customer fetch
+  const fetchCustomers = async () => {
     try {
-      const response = await fetch(PRODUCT_URLS.PRODUCT_GET_ALL_URL);
+      const response = await fetch(USER_URLS.USER_GET_CUSTOMERS_URL);
       const data = await response.json();
-      console.log("Products: ", data);
-      setProducts(data);
+      console.log("Customers: ", data);
+      setCustomers(data);
     } catch (error) {
-      console.error("Error fetching products", error);
+      console.error("Error fetching customers", error);
     }
   };
 
-  // Fetch products on component mount
+  // Fetch customers on component mount
   useEffect(() => {
-    fetchProducts();
+    fetchCustomers();
     setIsLoading(false);
-  }, [isProductUpdated]);
+  }, [isCustomerUpdated]);
 
-  // Function to handle adding a new product or editing an existing one
-  const handleAddProduct = (product, images) => {
-    if (editProductId !== null) {
+  // Function to handle adding a new customer or editing an existing one
+  const handleAddCustomer = (customer, images) => {
+    if (editCustomerId !== null) {
       // Edit mode
-      setNewProductData(product);
+      setNewCustomerData(customer);
       setSelectedImages(images);
       setShowEditConfirmModal(true);
-      setShowAddProductModal(false);
+      setShowAddCustomerModal(false);
     } else {
       // Add mode
-      setNewProductData(product);
+      setNewCustomerData(customer);
       setSelectedImages(images);
       setShowAddConfirmModal(true);
-      setShowAddProductModal(false);
+      setShowAddCustomerModal(false);
     }
   };
 
-  // Function to handle adding a new product
-  const handleAddProductOnConfirm = async () => {
+  // Function to handle adding a new customer
+  const handleAddCustomerOnConfirm = async () => {
     setIsLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append("name", newProductData.name);
-      formData.append("description", newProductData.description);
-      formData.append("price", newProductData.price);
-      formData.append("categoryID", newProductData.category);
-      formData.append("vendorID", newProductData.vendor);
-      // formData.append("isActive", newProductData.status);
+      formData.append("name", newCustomerData.name);
+      formData.append("description", newCustomerData.description);
+      formData.append("price", newCustomerData.price);
+      formData.append("categoryID", newCustomerData.category);
+      formData.append("vendorID", newCustomerData.vendor);
+      // formData.append("isActive", newCustomerData.status);
 
       // Append image files if you have any
       selectedImages.forEach((image) => {
@@ -83,30 +85,30 @@ const Product = () => {
           },
         })
         .then((response) => {
-          console.log("Product added successfully:", response.data);
-          setShowAddProductModal(false);
-          setIsProductUpdated(true);
+          console.log("Customer added successfully:", response.data);
+          setShowAddCustomerModal(false);
+          setIsCustomerUpdated(true);
         });
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      console.error("Error adding customer:", error);
+      alert("Failed to add customer. Please try again.");
     }
     setIsLoading(false);
   };
 
-  const handleEditProductOnConfirm = async () => {
-    console.log("Updating exsisting product", newProductData);
+  const handleEditCustomerOnConfirm = async () => {
+    console.log("Updating exsisting customer", newCustomerData);
     setIsLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append("name", newProductData.name);
-      formData.append("description", newProductData.description);
-      formData.append("price", newProductData.price);
-      formData.append("categoryID", newProductData.category);
-      formData.append("productId", newProductData.productId);
-      formData.append("vendorID", newProductData.vendor);
-      // formData.append("isActive", newProductData.status);
+      formData.append("name", newCustomerData.name);
+      formData.append("description", newCustomerData.description);
+      formData.append("price", newCustomerData.price);
+      formData.append("categoryID", newCustomerData.category);
+      formData.append("customerId", newCustomerData.customerId);
+      formData.append("vendorID", newCustomerData.vendor);
+      // formData.append("isActive", newCustomerData.status);
 
       // Append image files if you have any
       selectedImages.forEach((image) => {
@@ -120,18 +122,18 @@ const Product = () => {
           },
         })
         .then((response) => {
-          console.log("Product added successfully:", response.data);
-          setShowAddProductModal(false);
-          setIsProductUpdated(true);
+          console.log("Customer added successfully:", response.data);
+          setShowAddCustomerModal(false);
+          setIsCustomerUpdated(true);
         });
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      console.error("Error adding customer:", error);
+      alert("Failed to add customer. Please try again.");
     }
     setIsLoading(false);
 
-    setEditProductId(null); // Reset edit mode
-    setShowAddProductModal(false);
+    setEditCustomerId(null); // Reset edit mode
+    setShowAddCustomerModal(false);
   };
 
   // Function to handle search input change
@@ -139,38 +141,39 @@ const Product = () => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
-  // Function to handle category filter change
-  // const handleRatingChange = (e) => {
-  //   setSelectedRating(e.target.value);
-  // };
+  // Function to handle status filter change
+  const handleStatusChange = (e) => {
+    setSelectedStatus(e.target.value);
+  };
 
-  // Function to filter products based on search query and category
-  const filteredProducts = products.filter((product) => {
+  // Function to filter customers based on search query and category
+  const filteredCustomers = customers.filter((customer) => {
     const matchesSearch =
-      product.name.toLowerCase().includes(searchQuery) ||
-      // product.vendor.toLowerCase().includes(searchQuery) ||
-      product.price.toString().includes(searchQuery);
+      customer.fullName.toLowerCase().includes(searchQuery) ||
+      customer.userId.toLowerCase().includes(searchQuery) ||
+      customer.email.toString().includes(searchQuery);
 
-    const matchesRating = selectedRating
-      ? product.category.toString() === selectedRating
+    const matchesStatus = selectedStatus
+      ? (customer.isApproved === true ? "approved" : "pending") ===
+        selectedStatus.toLowerCase()
       : true;
 
-    return matchesSearch && matchesRating;
+    return matchesSearch && matchesStatus;
   });
 
   // Function to handle edit button click
   const handleEdit = (id) => {
     setEditModal(true);
-    const productToEdit = products.find((product) => product.id === id);
-    setNewProductData(productToEdit);
-    setEditProductId(id);
-    setShowAddProductModal(true);
+    const customerToEdit = customers.find((customer) => customer.id === id);
+    setNewCustomerData(customerToEdit);
+    setEditCustomerId(id);
+    setShowAddCustomerModal(true);
   };
 
   // Function to handle delete button click
   const handleDelete = (id) => {
-    console.log(`Delete product with ID: ${id}`);
-    setEditProductId(id);
+    console.log(`Delete customer with ID: ${id}`);
+    setEditCustomerId(id);
     setShowModal(true);
   };
 
@@ -181,18 +184,18 @@ const Product = () => {
     axios
       .put(PRODUCT_URLS.PRODUCT_DELETE_URL, {
         data: {
-          productId: editProductId,
+          customerId: editCustomerId,
           vendorId: "VEND609551",
           isDeleted: true,
         },
       })
       .then((response) => {
-        console.log("Product deleted successfully:", response.data);
-        setIsProductUpdated(true);
+        console.log("Customer deleted successfully:", response.data);
+        setIsCustomerUpdated(true);
       })
       .catch((error) => {
-        console.error("Error deleting product:", error);
-        alert("Failed to delete product. Please try again.");
+        console.error("Error deleting customer:", error);
+        alert("Failed to delete customer. Please try again.");
       });
 
     setShowModal(false);
@@ -200,7 +203,7 @@ const Product = () => {
 
   const handleAdd = () => {
     setEditModal(false);
-    setNewProductData({
+    setNewCustomerData({
       id: "",
       name: "",
       vendor: "",
@@ -208,35 +211,35 @@ const Product = () => {
       category: "",
     });
     setSelectedImages([]);
-    setEditProductId(null);
-    setShowAddProductModal(true);
+    setEditCustomerId(null);
+    setShowAddCustomerModal(true);
   };
 
-  const handleToggleStatus = (id) => {
-    const updatedProducts = products.map((product) =>
-      product.id === id ? { ...product, status: !product.status } : product
-    );
-    setProducts(updatedProducts);
-  };
+  // const handleToggleStatus = (id) => {
+  //   const updatedCustomers = customers.map((customer) =>
+  //     customer.id === id ? { ...customer, status: !customer.status } : customer
+  //   );
+  //   setCustomers(updatedCustomers);
+  // };
 
-  //handle product view
-  const handleProductView = (id) => {
-    const productToView = products.find((product) => product.id === id);
-    setNewProductData(productToView);
-    setShowViewProductModal(true);
+  //handle customer view
+  const handleCustomerView = (id) => {
+    const customerToView = customers.find((customer) => customer.id === id);
+    setNewCustomerData(customerToView);
+    setShowViewCustomerModal(true);
   };
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // You can set this to any number of items per page
 
-  // Calculate total pages based on filtered products
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  // Calculate total pages based on filtered customers
+  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
-  // Calculate the products for the current page
+  // Calculate the customers for the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(
+  const currentCustomers = filteredCustomers.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
@@ -248,13 +251,19 @@ const Product = () => {
     }
   };
 
+  // Function to handle displaying customer details
+  const handleViewDetails = (order) => {
+    setSelectedCustomer(order);
+    setShowCustomerModal(true);
+  };
+
   return (
     <div className="px-4 my-4">
       {/* Header text */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>List of All Products</h1>
+        <h1>List of All Customers</h1>
         <Button variant="primary" onClick={handleAdd}>
-          Add New Product
+          Add New Customer
         </Button>
       </div>
 
@@ -267,34 +276,31 @@ const Product = () => {
           padding: "20px",
         }}
       >
-        <h4>Search Products</h4>
+        <h4>Search Customers</h4>
         <div className="d-flex justify-content-between align-items-center">
           <input
             type="text"
             className="form-control w-25"
-            placeholder="Search by name, vendor, or price"
+            placeholder="Search by ID, name, or email"
             onChange={handleSearchChange}
           />
 
           {/* Filter by Rating */}
-          {/* <select
+          <select
             className="form-select w-25"
-            value={selectedRating}
-            onChange={handleRatingChange}
+            value={selectedStatus}
+            onChange={handleStatusChange}
           >
-            <option value="">Filter by Rating</option>
-            <option value="1">1 Star</option>
-            <option value="2">2 Stars</option>
-            <option value="3">3 Stars</option>
-            <option value="4">4 Stars</option>
-            <option value="5">5 Stars</option>
-          </select> */}
+            <option value="">Filter by Status</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+          </select>
         </div>
       </div>
 
       {/* Table */}
       <div>
-        {isLoading && products ? (
+        {isLoading && !customers ? (
           <div
             className="spinner-border"
             style={{ width: "3rem", height: "3rem" }}
@@ -310,57 +316,44 @@ const Product = () => {
             >
               <thead>
                 <tr>
-                  <th>Product ID</th>
-                  <th>Product Name</th>
-                  <th>Vendor </th>
-                  <th>Price</th>
-                  <th>Category</th>
-                  {/* <th>Status</th> */}
+                  <th>Customer ID</th>
+                  <th>Customer Name</th>
+                  <th>Email </th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {currentProducts.map((product) => (
+                {filteredCustomers.map((customer) => (
                   <tr
-                    key={product.id}
-                    onClick={() => console.log(product.id)}
+                    key={customer.userId}
+                    onClick={() => handleViewDetails(customer)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.productId}
+                    <td onClick={() => handleCustomerView(customer.userId)}>
+                      {customer.userId}
                     </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.name}
+                    <td onClick={() => handleCustomerView(customer.userId)}>
+                      {customer.fullName}
                     </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.vendorName}
+                    <td onClick={() => handleCustomerView(customer.userId)}>
+                      {customer.email}
                     </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.price}
+                    <td onClick={() => handleCustomerView(customer.userId)}>
+                      {customer.isApproved ? "Approved" : "Pending"}
                     </td>
-                    <td onClick={() => handleProductView(product.id)}>
-                      {product.categoryName}
-                    </td>
-                    {/* <td>
-                      <Form.Check
-                        type="switch"
-                        id={`custom-switch-${product.id}`}
-                        label={product.isActive ? "Active" : "Inactive"}
-                        checked={product.isActive}
-                        onChange={() => handleToggleStatus(product.id)}
-                      />
-                    </td> */}
+
                     <td>
                       <Button
                         variant="warning"
                         className="me-2"
-                        onClick={() => handleEdit(product.id)}
+                        onClick={() => handleEdit(customer.id)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="danger"
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDelete(customer.id)}
                       >
                         Delete
                       </Button>
@@ -416,33 +409,33 @@ const Product = () => {
         )}
       </div>
 
-      {/* Add Product Modal */}
-      <AddProductModal
-        show={showAddProductModal}
-        onClose={() => setShowAddProductModal(false)}
-        onAddProduct={handleAddProduct}
-        initialData={newProductData}
+      {/* Add Customer Modal */}
+      <AddCustomerModal
+        show={showAddCustomerModal}
+        onClose={() => setShowAddCustomerModal(false)}
+        onAddCustomer={handleAddCustomer}
+        initialData={newCustomerData}
         editModal={editModal}
         selectedImages={selectedImages}
         setSelectedImages={setSelectedImages}
       />
 
-      {/* View Product Modal */}
-      <ViewProduct
-        show={showViewProductModal}
-        onClose={() => setShowViewProductModal(false)}
-        onAddProduct={handleAddProduct}
-        productData={newProductData}
+      {/* View Customer Modal */}
+      {/* <ViewCustomer
+        show={showViewCustomerModal}
+        onClose={() => setShowViewCustomerModal(false)}
+        onAddCustomer={handleAddCustomer}
+        customerData={newCustomerData}
         editModal={editModal}
         selectedImages={selectedImages}
         setSelectedImages={setSelectedImages}
-      />
+      /> */}
 
-      {/* Confirmation of delete product */}
+      {/* Confirmation of delete customer */}
       <ConfirmModal
         show={showModal}
-        title="Delete Product"
-        body="Are you sure you want to delete this product?"
+        title="Delete Customer"
+        body="Are you sure you want to delete this customer?"
         onConfirm={() => {
           handleDeleteConfirm();
         }}
@@ -453,14 +446,14 @@ const Product = () => {
         isLoading={isLoading}
       />
 
-      {/* Confirmation of add new product */}
+      {/* Confirmation of add new customer */}
       <ConfirmModal
         show={showAddConfirmModal}
-        title="Confirm New Product"
-        body="Are you sure you want to add this product?"
+        title="Confirm New Customer"
+        body="Are you sure you want to add this customer?"
         onConfirm={() => {
           console.log("Create confirmed");
-          handleAddProductOnConfirm(newProductData);
+          handleAddCustomerOnConfirm(newCustomerData);
           setShowAddConfirmModal(false);
         }}
         onClose={() => {
@@ -470,14 +463,14 @@ const Product = () => {
         isLoading={isLoading}
       />
 
-      {/* Confirmation of edit product */}
+      {/* Confirmation of edit customer */}
       <ConfirmModal
         show={showEditConfirmModal}
-        title="Confirm Edit Product"
-        body="Are you sure you want to update this product?"
+        title="Confirm Edit Customer"
+        body="Are you sure you want to update this customer?"
         onConfirm={() => {
           console.log("Update confirmed");
-          handleEditProductOnConfirm(newProductData);
+          handleEditCustomerOnConfirm(newCustomerData);
           setShowEditConfirmModal(false);
         }}
         onClose={() => {
@@ -486,8 +479,15 @@ const Product = () => {
         }}
         isLoading={isLoading}
       />
+
+      {/* View Order Modal */}
+      <ViewCustomerModal
+        show={showCustomerModal}
+        onClose={() => setShowCustomerModal(false)}
+        customer={selectedCustomer}
+      />
     </div>
   );
 };
 
-export default Product;
+export default Customer;

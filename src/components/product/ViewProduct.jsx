@@ -29,7 +29,7 @@ const ViewProduct = ({ show, onClose, productData }) => {
     <>
       <Modal show={show} onHide={onClose} size="xl" scrollable>
         <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-          <Modal.Title>Listening Preview</Modal.Title>
+          <Modal.Title>Product Preview</Modal.Title>
         </Modal.Header>
 
         {productData ? (

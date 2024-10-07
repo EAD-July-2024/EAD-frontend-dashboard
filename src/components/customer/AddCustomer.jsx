@@ -26,13 +26,8 @@ const AddProductModal = ({
 }) => {
   const [productData, setProductData] = useState(initialData);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   console.log("initialData: ", productData);
-
-  const handleConfirmationModel = () => {
-    setShowModal(!showModal);
-  };
 
   const handleModalClose = () => {
     setShowConfirm(true);
@@ -113,16 +108,9 @@ const AddProductModal = ({
     <>
       <Modal show={show} onHide={handleModalClose} size="xl" scrollable>
         <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-          {/* <Modal.Title>
+          <Modal.Title>
             {initialData?.id ? "Edit Product" : "Add New Product"}
-          </Modal.Title> */}
-          {showModal ? (
-            <Modal.Title>Confirm Save Changes</Modal.Title>
-          ) : initialData?.id ? (
-            "Edit Product"
-          ) : (
-            "Add New Product"
-          )}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
           <Form onSubmit={handleSubmit}>

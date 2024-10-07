@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddOrderModal from "../../components/order/AddOrder";
@@ -110,6 +110,7 @@ const Order = () => {
     const matchesStatus = selectedStatus
       ? Order.status.toLowerCase() === selectedStatus.toLowerCase()
       : true;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -217,7 +218,11 @@ const Order = () => {
           </thead>
           <tbody>
             {filteredOrders.map((Order) => (
-              <tr key={Order.orderid} onClick={() => handleViewDetails(Order)}>
+              <tr
+                key={Order.orderid}
+                onClick={() => handleViewDetails(Order)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{Order.orderId}</td>
                 <td>{Order.customerId}</td>
                 <td>{Order.totalPrice}</td>

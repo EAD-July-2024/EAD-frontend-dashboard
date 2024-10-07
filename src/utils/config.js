@@ -6,6 +6,11 @@ export const AUTH_URLS = {
   LOGIN_URL: `${BACKEND_API_URL}/api/auth/login`,
 };
 
+// User
+export const USER_URLS = {
+  USER_GET_CUSTOMERS_URL: `${BACKEND_API_URL}/api/auth/customers`,
+};
+
 // Product
 export const PRODUCT_URLS = {
   PRODUCT_CREATE_URL: `${BACKEND_API_URL}/api/product`,
@@ -28,5 +33,7 @@ export const ORDER_URLS = {
   ORDER_UPDATE_URL: `${BACKEND_API_URL}/api/order/update`,
   ORDER_DELETE_URL: `${BACKEND_API_URL}/api/order/orderDelete`,
 };
+
+//
 
 export default BACKEND_API_URL;

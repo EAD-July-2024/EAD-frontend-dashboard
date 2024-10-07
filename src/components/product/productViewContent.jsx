@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Modal, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+
 export default function ProductViewContent({ productData }) {
   const [selectedImg, setSelectedImg] = useState(
     productData && productData.imageUrls[0]

@@ -18,14 +18,11 @@ export const messaging = getMessaging(app);
 
 export const generateToken = async () => {
   const permission = await Notification.requestPermission();
-  console.log(permission);
+  // console.log(permission);
 
   const auth = JSON.parse(localStorage.getItem("auth"));
   const userId = auth.userId;
   const userRole = auth.role;
-
-  console.log("userId: ", userId);
-  console.log("userRole: ", userRole);
 
   if (permission === "granted") {
     const token = await getToken(messaging, {
@@ -33,7 +30,7 @@ export const generateToken = async () => {
         "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
     });
 
-    console.log(token);
+    // console.log(token);
     localStorage.setItem("fcm_token", JSON.stringify(token));
 
     axios
@@ -42,10 +39,10 @@ export const generateToken = async () => {
         fcmToken: token,
       })
       .then((response) => {
-        console.log("Token saved successfully", response);
+        // console.log("Token saved successfully", response);
       })
       .catch((error) => {
-        console.error("Error saving token", error);
+        // console.error("Error saving token", error);
       });
   }
 };
