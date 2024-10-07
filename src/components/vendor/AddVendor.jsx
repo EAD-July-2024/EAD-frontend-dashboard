@@ -1,87 +1,184 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
+import { AUTH_URLS } from "../../utils/config";
 
-const AddVendorModal = ({ show, onClose, onAddVendor, initialData }) => {
-  const [vendorData, setVendorData] = React.useState(initialData);
+const AddVendorModal = ({
+  show,
+  onClose,
+  initialData,
+  onSuccess,
+  editVendorId,
+}) => {
+  const [initialVendorData, setInitialVendorData] = useState(initialData);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newVendorData, setNewVendorData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Update vendor data state on initialData change (for editing)
-  useEffect(() => {
-    setVendorData(initialData);
-  }, [initialData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setVendorData({ ...vendorData, [name]: value });
-  };
-
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddVendor(vendorData);
+    setNewVendorData({
+      fullName: name,
+      email: email,
+      password: password,
+      role: "Vendor",
+    });
+    setShowConfirm(true);
   };
+
+  // Call API to add new vendor
+  const addVendorOnConfirm = async () => {
+    setIsLoading(true);
+
+    if (initialData && editVendorId) {
+      console.log("Editing Vendor");
+      // await axios
+      // .put(`${AUTH_URLS.REGISTER_URL}/${editVendorId}`, newVendorData)
+      // .then((response) => {
+      //   console.log(response.data);
+      //   setIsLoading(false);
+      //   setShowConfirm(false);
+      //   onSuccess();
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      //   setIsLoading(false);
+      // });
+      setIsLoading(false);
+    } else {
+      await axios
+        .post(AUTH_URLS.REGISTER_URL, newVendorData)
+        .then((response) => {
+          console.log(response.data);
+          setIsLoading(false);
+          setShowConfirm(false);
+          onSuccess();
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    }
+  };
+
+  console.log("Initial Data", initialData);
+  console.log("editVendorId", editVendorId);
 
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-        <Modal.Title>
-          {initialData?.id ? "Edit Vendor" : "Add New Vendor"}
-        </Modal.Title>
+        {showConfirm ? (
+          <Modal.Title>Confirm New Vendor</Modal.Title>
+        ) : (
+          <Modal.Title>
+            {initialData?.id ? "Edit Vendor" : "Add New Vendor"}
+          </Modal.Title>
+        )}
       </Modal.Header>
+      {/* Modal Body */}
       <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
-        <Form onSubmit={handleSubmit}>
-          {/* Editable Vendor ID for Adding New Vendor */}
+        {showConfirm ? (
+          <>Are you sure you want to add this vendor?</>
+        ) : (
+          <>
+            <Form onSubmit={handleSubmit}>
+              {/* Editable Vendor ID for Adding New Vendor */}
+              {initialData && editVendorId && (
+                <Form.Group className="mt-2">
+                  <Form.Label>Vendor ID</Form.Label>
+                  <Form.Control
+                    disabled
+                    type="text"
+                    name="userId"
+                    value={initialData && editVendorId ? editVendorId : ""}
+                  />
+                </Form.Group>
+              )}
 
-          <Form.Group controlId="vendorName" className="mt-2">
-            <Form.Label>Vendor Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={vendorData?.name || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+              <Form.Group className="mt-2">
+                <Form.Label>Vendor Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="fullName"
+                  defaultValue={
+                    initialData && editVendorId ? initialData.fullName : ""
+                  }
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-          <Form.Group controlId="vendor" className="mt-2">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              type="text"
-              name="vendor"
-              value={vendorData?.vendor || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+              <Form.Group className="mt-2">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="email"
+                  defaultValue={
+                    initialData && editVendorId ? initialData.email : ""
+                  }
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-          <Form.Group controlId="price" className="mt-2">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="number"
-              name="price"
-              value={vendorData?.price || ""}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+              <Form.Group className="mt-2">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-          <Form.Group controlId="rating" className="mt-2">
-            <Form.Label>Status</Form.Label>
-            <Form.Control
-              as="select"
-              name="rating"
-              value={vendorData?.rating || 1}
-              onChange={handleChange}
-              required
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </Form.Control>
-          </Form.Group>
-
-          <Button variant="primary" type="submit" className="mt-4">
-            {initialData?.id ? "Update" : "Add Vendor"}
-          </Button>
-        </Form>
+              <Form.Group className="mt-2">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="confirmPassword"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Form>
+          </>
+        )}
       </Modal.Body>
+      <Modal.Footer style={{ backgroundColor: "#edf2fd" }}>
+        {showConfirm ? (
+          <>
+            <Button
+              variant="warning"
+              onClick={() => setShowConfirm(false)}
+              style={{ minWidth: "80px" }}
+            >
+              No
+            </Button>
+            <Button
+              disabled={isLoading}
+              variant={"success"}
+              onClick={addVendorOnConfirm}
+              style={{ minWidth: "80px" }}
+            >
+              Yes
+            </Button>
+          </>
+        ) : (
+          <Button
+            variant="primary"
+            type="submit"
+            className="mt-4"
+            onClick={handleSubmit}
+          >
+            {initialData?.userId ? "Update Vendor" : "Add Vendor"}
+          </Button>
+        )}
+      </Modal.Footer>
     </Modal>
   );
 };

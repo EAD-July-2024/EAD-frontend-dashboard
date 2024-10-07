@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddVendorModal from "../../components/vendor/AddVendor";
 import ViewVendorModal from "../../components/vendor/ViewVendor";
-import { VENDOR_URLS } from "../../utils/config";
+import { AUTH_URLS, VENDOR_URLS } from "../../utils/config";
 import axios from "axios";
 
 const Vendor = () => {
@@ -19,6 +19,7 @@ const Vendor = () => {
   const [newVendorData, setNewVendorData] = useState(null);
   const [editVendorId, setEditVendorId] = useState(null);
   const [selectedVendor, setSelectedVendor] = useState(null);
+  const [isEdditing, setIsEdditing] = useState(false);
 
   // Fetch all vendors
   const fetchAllVendors = async () => {
@@ -47,7 +48,6 @@ const Vendor = () => {
     } else {
       // Add mode
       setNewVendorData(vendor);
-
       setShowAddConfirmModal(true);
       setShowAddVendorModal(false);
     }
@@ -58,9 +58,10 @@ const Vendor = () => {
     setSelectedVendor(vendor);
     setShowVendorModal(true);
   };
-  const handleAddVendorOnConfirm = () => {
+
+  // Function to handle adding a new vendor
+  const handleAddVendorOnConfirm = async () => {
     console.log("Adding new vendor", newVendorData);
-    setVendors((prevVendors) => [...prevVendors, newVendorData]);
     setShowAddVendorModal(false);
   };
 
@@ -89,20 +90,21 @@ const Vendor = () => {
       vendor.fullName.toLowerCase().includes(searchQuery) ||
       vendor.userId.toLowerCase().includes(searchQuery);
 
-    // const matchesRating = selectedRating
-    //   ? vendor.rating.toString() === selectedRating
-    //   : true;
+    const matchesRating = selectedRating
+      ? vendor.averageRating >= selectedRating &&
+        vendor.averageRating < selectedRating + 1
+      : true;
 
-    return matchesSearch;
-    // return matchesSearch && matchesRating;
+    // return matchesSearch;
+    return matchesSearch && matchesRating;
   });
 
   // Function to handle edit button click
   const handleEdit = (id) => {
-    const vendorToEdit = vendors.find((vendor) => vendor.id === id);
+    const vendorToEdit = vendors.find((vendor) => vendor.userId === id);
     setNewVendorData(vendorToEdit);
     setEditVendorId(id);
-    setShowAddVendorModal(true); // Open the modal
+    setShowAddVendorModal(true);
   };
 
   // Function to handle delete button click
@@ -113,9 +115,8 @@ const Vendor = () => {
 
   const handleAdd = () => {
     console.log("Add new vendor button clicked");
-    // Reset the vendor data to clear the fields
-    setNewVendorData({ id: "", name: "", vendor: "", price: "", rating: 1 }); // Reset fields
-    setEditVendorId(null); // Ensure edit mode is reset
+    setEditVendorId(null);
+    setNewVendorData(null);
     setShowAddVendorModal(true);
   };
 
@@ -125,6 +126,11 @@ const Vendor = () => {
     );
 
     setVendors(updatedVendors); // Update the main vendors state
+  };
+
+  const handleAddVendorSuccess = () => {
+    setShowAddVendorModal(false);
+    fetchAllVendors();
   };
 
   return (
@@ -199,13 +205,19 @@ const Vendor = () => {
                   <Button
                     variant="warning"
                     className="me-2"
-                    onClick={() => handleEdit(vendor.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(vendor.userId);
+                    }}
                   >
                     Edit
                   </Button>
                   <Button
                     variant="danger"
-                    onClick={() => handleDelete(vendor.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(vendor.id);
+                    }}
                   >
                     Delete
                   </Button>
@@ -219,9 +231,13 @@ const Vendor = () => {
       {/* Add Vendor Modal */}
       <AddVendorModal
         show={showAddVendorModal}
-        onClose={() => setShowAddVendorModal(false)}
+        onClose={() => {
+          setShowAddVendorModal(false);
+        }}
         onAddVendor={handleAddVendor}
-        initialData={newVendorData} // Pass the vendor data to be edited
+        initialData={newVendorData}
+        editVendorId={editVendorId}
+        onSuccess={handleAddVendorSuccess}
       />
 
       <ViewVendorModal
@@ -251,7 +267,7 @@ const Vendor = () => {
         title="Confirm New Vendor"
         body="Are you sure you want to add this vendor?"
         onConfirm={() => {
-          console.log("Create confirmed");
+          console.log("Create vendor confirmed");
           handleAddVendorOnConfirm(newVendorData);
           setShowAddConfirmModal(false);
         }}
