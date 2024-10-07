@@ -17,6 +17,7 @@ const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
 export const generateToken = async () => {
+  const vapidKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
   const permission = await Notification.requestPermission();
   // console.log(permission);
 
@@ -26,8 +27,7 @@ export const generateToken = async () => {
 
   if (permission === "granted") {
     const token = await getToken(messaging, {
-      vapidKey:
-        "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
+      vapidKey,
     });
 
     // console.log(token);
@@ -40,7 +40,7 @@ export const generateToken = async () => {
         role: userRole,
       })
       .then((response) => {
-        // console.log("Token saved successfully", response);
+        console.log("Token saved successfully", response);
       })
       .catch((error) => {
         // console.error("Error saving token", error);

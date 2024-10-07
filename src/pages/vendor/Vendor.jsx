@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddVendorModal from "../../components/vendor/AddVendor";
 import ViewVendorModal from "../../components/vendor/ViewVendor";
+import { VENDOR_URLS } from "../../utils/config";
+import axios from "axios";
 
 const Vendor = () => {
   const [showModal, setShowModal] = useState(false);
@@ -13,70 +15,27 @@ const Vendor = () => {
   const [showVendorModal, setShowVendorModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
-  const [vendors, setVendors] = useState([
-    {
-      id: 1,
-      name: "Vendor 1",
-      rating: 1,
-      country: "Sri lanka",
-      comments: [
-        {
-          cusId: 1,
-          comment: "Good vendor",
-        },
-        {
-          cusId: 2,
-          comment: "Bad vendor",
-        },
-        {
-          cusId: 3,
-          comment: "Average vendor",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Vendor 2",
-      rating: 2,
-      country: "China",
-      comments: [
-        {
-          cusId: 1,
-          comment: "Good vendor",
-        },
-        {
-          cusId: 2,
-          comment: "Bad vendor",
-        },
-        {
-          cusId: 3,
-          comment: "Average vendor",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Vendor 3",
-      rating: 5,
-      country: "Japan",
-      comments: [
-        {
-          cusId: 1,
-          comment: "Good vendor",
-        },
-        {
-          cusId: 2,
-          comment: "Bad vendor",
-        },
-        {
-          cusId: 3,
-          comment: "Average vendor",
-        },
-      ],
-    },
-  ]);
+  const [vendors, setVendors] = useState([]);
   const [newVendorData, setNewVendorData] = useState(null);
   const [editVendorId, setEditVendorId] = useState(null);
+  const [selectedVendor, setSelectedVendor] = useState(null);
+
+  // Fetch all vendors
+  const fetchAllVendors = async () => {
+    await axios
+      .get(VENDOR_URLS.VENDOR_GET_ALL_URL)
+      .then((response) => {
+        console.log(response.data);
+        setVendors(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchAllVendors();
+  }, []);
 
   // Function to handle adding a new vendor or editing an existing one
   const handleAddVendor = (vendor) => {
@@ -94,8 +53,10 @@ const Vendor = () => {
     }
   };
 
-  const handleVendorViewModal = (vendor) => {
-    setShowVendorModal(!showVendorModal);
+  const set = (vendor) => {
+    console.log("Viewing vendor", vendor);
+    setSelectedVendor(vendor);
+    setShowVendorModal(true);
   };
   const handleAddVendorOnConfirm = () => {
     console.log("Adding new vendor", newVendorData);
@@ -125,15 +86,15 @@ const Vendor = () => {
   // Function to filter vendors based on search query and rating
   const filteredVendors = vendors.filter((vendor) => {
     const matchesSearch =
-      vendor.name.toLowerCase().includes(searchQuery) ||
-      vendor.vendor.toLowerCase().includes(searchQuery) ||
-      vendor.price.toString().includes(searchQuery);
+      vendor.fullName.toLowerCase().includes(searchQuery) ||
+      vendor.userId.toLowerCase().includes(searchQuery);
 
-    const matchesRating = selectedRating
-      ? vendor.rating.toString() === selectedRating
-      : true;
+    // const matchesRating = selectedRating
+    //   ? vendor.rating.toString() === selectedRating
+    //   : true;
 
-    return matchesSearch && matchesRating;
+    return matchesSearch;
+    // return matchesSearch && matchesRating;
   });
 
   // Function to handle edit button click
@@ -217,19 +178,23 @@ const Vendor = () => {
           <thead>
             <tr>
               <th>Vendor ID</th>
-              <th>Vendor Name</th>
-              <th>Country</th>
+              <th>Name</th>
+              <th>No. of Orders</th>
               <th>Rating</th>
-              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredVendors.map((vendor) => (
-              <tr key={vendor.id} onClick={() => console.log(vendor.id)}>
-                <td onClick={handleVendorViewModal}>{vendor.id}</td>
-                <td onClick={handleVendorViewModal}>{vendor.name}</td>
-                <td onClick={handleVendorViewModal}>{vendor.country}</td>
-                <td onClick={handleVendorViewModal}>{vendor.rating}</td>
+              <tr
+                style={{ cursor: "pointer" }}
+                key={vendor.userId}
+                onClick={() => set(vendor)}
+              >
+                <td>{vendor.userId}</td>
+                <td>{vendor.fullName}</td>
+                <td>{vendor.Email}</td>
+                <td>{vendor.averageRating}</td>
                 <td>
                   <Button
                     variant="warning"
@@ -259,7 +224,11 @@ const Vendor = () => {
         initialData={newVendorData} // Pass the vendor data to be edited
       />
 
-      <ViewVendorModal show={showVendorModal} onClose={handleVendorViewModal} />
+      <ViewVendorModal
+        show={showVendorModal}
+        onClose={() => setShowVendorModal(false)}
+        vendorData={selectedVendor}
+      />
 
       {/* Confirmation of delete vendor */}
       <ConfirmModal
