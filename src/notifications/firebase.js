@@ -40,6 +40,7 @@ export const generateToken = async () => {
       .post(FCM_URLS.FCM_TOKEN_CREATE_URL, {
         userId: userId,
         fcmToken: token,
+        role: userRole,
       })
       .then((response) => {
         console.log("Token saved successfully", response);
