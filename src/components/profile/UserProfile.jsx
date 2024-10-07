@@ -6,20 +6,23 @@ import { Modal, Row, Col } from "react-bootstrap";
 import { FaComments } from "react-icons/fa";
 import StarRatings from "react-star-ratings";
 
-const UserProfile = ({ show, onClose, productData }) => {
-  const commentList = [
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-    "this is comment 1 this is comment 1this is comment 1this is comment 1this is comment 1this is comment 1",
-  ];
+const UserProfile = ({ show, onClose, vendorData }) => {
+  const [vendor, setVendor] = useState(vendorData);
+  const [commentList, setCommentList] = useState([]);
+
+  useEffect(() => {
+    setVendor(vendorData);
+  }, [vendorData]);
+
+  useEffect(() => {
+    setCommentList(vendorData.ratings);
+  }, [vendor]);
+
+  console.log("commentList", commentList);
+
   return (
     <>
-      <div style={{ overflowX: "hidden" }}>
+      <div style={{ overflowX: "hidden", minHeight: "450px" }}>
         <Row
           style={{
             backgroundColor: "#edf2fd",
@@ -38,18 +41,26 @@ const UserProfile = ({ show, onClose, productData }) => {
           </Col>
           <Col xs={4}>
             <Row style={{ display: "flex", flexDirection: "row" }}>
-              <p>Name : Shehan</p>
+              <p>
+                <b>Vendor ID:</b> {vendor && vendor.userId}
+              </p>
             </Row>
             <Row style={{ display: "flex", flexDirection: "row" }}>
-              <p>Country : Sri lanka</p>
+              <p>
+                <b>Name:</b> {vendor && vendor.fullName}
+              </p>
             </Row>
           </Col>
           <Col xs={5}>
             <Row style={{ display: "flex", flexDirection: "row" }}>
-              <p>Email : Shehangunasekara2019@gmail.com</p>
+              <p>
+                <b>Email:</b> Shehangunasekara2019@gmail.com
+              </p>
             </Row>{" "}
             <Row style={{ display: "flex", flexDirection: "row" }}>
-              <p>User Type : Vendor</p>
+              <p>
+                <b>No. of Orders:</b> 10
+              </p>
             </Row>
           </Col>
           <Col xs={1}>
@@ -61,7 +72,7 @@ const UserProfile = ({ show, onClose, productData }) => {
                 color: "green",
               }}
             >
-              <p> Active</p>
+              <p>Active</p>
             </Row>
           </Col>
         </Row>
@@ -75,7 +86,7 @@ const UserProfile = ({ show, onClose, productData }) => {
                 fontWeight: "bold",
               }}
             >
-              3.5
+              {vendor && vendor.averageRating}
             </Row>
             <Row
               style={{
@@ -85,33 +96,49 @@ const UserProfile = ({ show, onClose, productData }) => {
               }}
             >
               <StarRatings
-                rating={3.5} // This is the rating value passed as a prop
-                starRatedColor="gold" // Color of the rated stars
-                numberOfStars={5} // Total number of stars
-                name="rating" // Name attribute for form handling (optional)
-                starDimension="35px" // Size of the stars
-                starSpacing="2px" // Spacing between stars
+                rating={vendor && vendor.averageRating}
+                starRatedColor="gold"
+                numberOfStars={5}
+                name="rating"
+                starDimension="35px"
+                starSpacing="2px"
               />
             </Row>
           </Col>
-          <Col xs={8} style={{ marginTop: "20px" }}>
-            <p style={{ fontSize: "25px", fontWeight: "bold" }}>Feedback</p>
-            {commentList.map((comment, index) => (
-              <Row key={index} className="mb-2">
+
+          {commentList.length > 0 ? (
+            <Col xs={8} style={{ marginTop: "20px" }}>
+              <p style={{ fontSize: "25px", fontWeight: "bold" }}>
+                Customer Feedbacks
+              </p>
+              {commentList.map((comment, index) => (
+                <Row key={index} className="mb-2">
+                  <p style={{ fontWeight: "bold" }}>
+                    {" "}
+                    <FaComments /> {comment.customerId}{" "}
+                  </p>
+                  <Row
+                    className="mb-2"
+                    style={{ marginLeft: "20px", marginTop: "-10px" }}
+                  >
+                    <Col xs={11}>{comment.comment} </Col>
+                  </Row>
+                </Row>
+              ))}
+            </Col>
+          ) : (
+            <Col xs={8} style={{ marginTop: "20px" }}>
+              <p style={{ fontSize: "25px", fontWeight: "bold" }}>
+                Customer Feedbacks
+              </p>
+              <Row className="mb-2">
                 <p style={{ fontWeight: "bold" }}>
                   {" "}
-                  <FaComments /> customer name
+                  <FaComments /> No Customer Feedbacks to display
                 </p>{" "}
-                <Row
-                  key={index}
-                  className="mb-2"
-                  style={{ marginLeft: "20px", marginTop: "-10px" }}
-                >
-                  <Col xs={11}> {comment}</Col>
-                </Row>
               </Row>
-            ))}
-          </Col>
+            </Col>
+          )}
         </Row>
       </div>
     </>

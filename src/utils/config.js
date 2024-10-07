@@ -34,6 +34,19 @@ export const ORDER_URLS = {
   ORDER_DELETE_URL: `${BACKEND_API_URL}/api/order/orderDelete`,
 };
 
-//
+//Category
+export const CATEGORY_URLS = {
+  CATEGORY_CREATE_URL: `${BACKEND_API_URL}/api/category`,
+  CATEGORY_GET_ALL_URL: `${BACKEND_API_URL}/api/category`,
+  CATEGORY_GET_BY_ID_URL: `${BACKEND_API_URL}/api/category`,
+  CATEGORY_UPDATE_URL: `${BACKEND_API_URL}/api/category/`,
+  CATEGORY_DELETE_URL: `${BACKEND_API_URL}/api/category/`,
+};
+
+//Vendor
+export const VENDOR_URLS = {
+  VENDOR_GET_ALL_URL: `${BACKEND_API_URL}/api/vendor/Allvendors`,
+  VENDOR_GET_BY_ID_URL: `${BACKEND_API_URL}/api/vendor`,
+};
 
 export default BACKEND_API_URL;

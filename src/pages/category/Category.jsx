@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddCategoryModal from "../../components/category/AddCategory";
 import ViewCategoryModal from "../../components/category/ViewCategory";
-import { PRODUCT_URLS, USER_URLS } from "../../utils/config";
+import { CATEGORY_URLS } from "../../utils/config";
 import axios from "axios";
 
 const Category = () => {
@@ -17,6 +17,7 @@ const Category = () => {
   const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
   const [showViewCategoryModal, setShowViewCategoryModal] = useState(false);
   const [categorys, setCategorys] = useState([]);
+  const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
   const [newCategoryData, setNewCategoryData] = useState(null);
@@ -28,13 +29,21 @@ const Category = () => {
   // Function to handle category fetch
   const fetchCategorys = async () => {
     try {
-      const response = await fetch(USER_URLS.USER_GET_CUSTOMERS_URL);
+      const response = await fetch(CATEGORY_URLS.CATEGORY_GET_ALL_URL);
       const data = await response.json();
       console.log("Categorys: ", data);
       setCategorys(data);
     } catch (error) {
       console.error("Error fetching categorys", error);
     }
+  };
+
+  // Toggle function to change the status
+  const handleToggleStatus = (id) => {
+    const updatedCategories = categorys.map((category) =>
+      category.id === id ? { ...category, status: !category.status } : category
+    );
+    setCategorys(updatedCategories);
   };
 
   // Fetch categorys on component mount
@@ -63,73 +72,12 @@ const Category = () => {
   // Function to handle adding a new category
   const handleAddCategoryOnConfirm = async () => {
     setIsLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("name", newCategoryData.name);
-      formData.append("description", newCategoryData.description);
-      formData.append("price", newCategoryData.price);
-      formData.append("categoryID", newCategoryData.category);
-      formData.append("vendorID", newCategoryData.vendor);
-      // formData.append("isActive", newCategoryData.status);
-
-      // Append image files if you have any
-      selectedImages.forEach((image) => {
-        formData.append("images", image.file);
-      });
-
-      await axios
-        .post(PRODUCT_URLS.PRODUCT_CREATE_URL, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Category added successfully:", response.data);
-          setShowAddCategoryModal(false);
-          setIsCategoryUpdated(true);
-        });
-    } catch (error) {
-      console.error("Error adding category:", error);
-      alert("Failed to add category. Please try again.");
-    }
     setIsLoading(false);
   };
 
   const handleEditCategoryOnConfirm = async () => {
     console.log("Updating exsisting category", newCategoryData);
     setIsLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("name", newCategoryData.name);
-      formData.append("description", newCategoryData.description);
-      formData.append("price", newCategoryData.price);
-      formData.append("categoryID", newCategoryData.category);
-      formData.append("categoryId", newCategoryData.categoryId);
-      formData.append("vendorID", newCategoryData.vendor);
-      // formData.append("isActive", newCategoryData.status);
-
-      // Append image files if you have any
-      selectedImages.forEach((image) => {
-        formData.append("images", image.file);
-      });
-
-      await axios
-        .put(PRODUCT_URLS.PRODUCT_UPDATE_URL, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Category added successfully:", response.data);
-          setShowAddCategoryModal(false);
-          setIsCategoryUpdated(true);
-        });
-    } catch (error) {
-      console.error("Error adding category:", error);
-      alert("Failed to add category. Please try again.");
-    }
     setIsLoading(false);
 
     setEditCategoryId(null); // Reset edit mode
@@ -147,15 +95,13 @@ const Category = () => {
   };
 
   // Function to filter categorys based on search query and category
-  const filteredCategorys = categorys.filter((category) => {
+  const filteredCategories = categorys.filter((category) => {
     const matchesSearch =
-      category.fullName.toLowerCase().includes(searchQuery) ||
-      category.userId.toLowerCase().includes(searchQuery) ||
-      category.email.toString().includes(searchQuery);
+      category.name.toLowerCase().includes(searchQuery) ||
+      category.categoryId.toLowerCase().includes(searchQuery);
 
     const matchesStatus = selectedStatus
-      ? (category.isApproved === true ? "approved" : "pending") ===
-        selectedStatus.toLowerCase()
+      ? category.status.toLowerCase() === selectedStatus.toLowerCase()
       : true;
 
     return matchesSearch && matchesStatus;
@@ -182,7 +128,7 @@ const Category = () => {
     console.log("Delete confirmed");
 
     axios
-      .put(PRODUCT_URLS.PRODUCT_DELETE_URL, {
+      .put(CATEGORY_URLS.CATEGORY_DELETE_URL, {
         data: {
           categoryId: editCategoryId,
           vendorId: "VEND609551",
@@ -234,12 +180,12 @@ const Category = () => {
   const itemsPerPage = 6; // You can set this to any number of items per page
 
   // Calculate total pages based on filtered categorys
-  const totalPages = Math.ceil(filteredCategorys.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
 
   // Calculate the categorys for the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentCategorys = filteredCategorys.slice(
+  const currentCategorys = filteredCategories.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
@@ -292,8 +238,8 @@ const Category = () => {
             onChange={handleStatusChange}
           >
             <option value="">Filter by Status</option>
-            <option value="Approved">Approved</option>
-            <option value="Pending">Pending</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
           </select>
         </div>
       </div>
@@ -317,30 +263,32 @@ const Category = () => {
               <thead>
                 <tr>
                   <th>Category ID</th>
-                  <th>Category Name</th>
-                  <th>Email </th>
+                  <th>Name</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredCategorys.map((category) => (
+                {filteredCategories.map((category) => (
                   <tr
-                    key={category.userId}
+                    key={category.categoryId}
                     onClick={() => handleViewDetails(category)}
                     style={{ cursor: "pointer" }}
                   >
                     <td onClick={() => handleCategoryView(category.userId)}>
-                      {category.userId}
+                      {category.categoryId}
                     </td>
                     <td onClick={() => handleCategoryView(category.userId)}>
-                      {category.fullName}
+                      {category.name}
                     </td>
                     <td onClick={() => handleCategoryView(category.userId)}>
-                      {category.email}
-                    </td>
-                    <td onClick={() => handleCategoryView(category.userId)}>
-                      {category.isApproved ? "Approved" : "Pending"}
+                      <Form.Check
+                        type="switch"
+                        id={`custom-switch-${category.categoryId}`}
+                        label={category.status}
+                        checked={category.status === "Active"}
+                        onChange={() => handleToggleStatus(category.categoryId)}
+                      />
                     </td>
 
                     <td>

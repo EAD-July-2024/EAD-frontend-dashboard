@@ -17,16 +17,13 @@ const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
 export const generateToken = async () => {
+  const vapidKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
   const permission = await Notification.requestPermission();
   // console.log(permission);
 
   const auth = JSON.parse(localStorage.getItem("auth"));
   const userId = auth.userId;
   const userRole = auth.role;
-
-  const vapidKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
-
-  // "BDhf6kliMK-ogdljqa8aAsTUHgExh8PxtCPmzGDAHjhI3vktN3_68PusccZ_YAZ_--TOL2ydd3ozB7-1eVHFDBs",
 
   if (permission === "granted") {
     const token = await getToken(messaging, {
