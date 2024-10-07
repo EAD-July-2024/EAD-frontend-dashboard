@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import ProductViewContent from "../product/productViewContent";
 
 const ViewOrderModal = ({ show, onClose, order }) => {
@@ -33,13 +32,48 @@ const ViewOrderModal = ({ show, onClose, order }) => {
   console.log("order.orderItems", order.orderItems);
 
   return (
-    <Modal show={show} onHide={onClose} size="xl" scrollable>
+    <Modal
+      show={show}
+      onHide={onClose}
+      size={showModal ? "md" : "xl"}
+      scrollable
+    >
       <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-        <Modal.Title>Order Details - {order.orderId}</Modal.Title>
+        {showModal ? (
+          <Modal.Title>Confirm Save Changes</Modal.Title>
+        ) : (
+          <Modal.Title>Order Details - {order.orderId}</Modal.Title>
+        )}
       </Modal.Header>
       <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
         {showModal ? (
-          <div
+          <>
+            <div>
+              <span>Are you sure you want to save changes?</span>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "20px",
+                }}
+              >
+                <Button
+                  variant="warning"
+                  onClick={handleConfirmationModel}
+                  style={{ minWidth: "80px", marginRight: "10px" }}
+                >
+                  No
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={handleConfirmationModel}
+                  style={{ minWidth: "80px" }}
+                >
+                  Yes
+                </Button>
+              </div>
+            </div>
+            {/* <div
             style={{
               display: "flex",
               flexDirection: "column",
@@ -49,7 +83,7 @@ const ViewOrderModal = ({ show, onClose, order }) => {
               minHeight: "400px",
             }}
           >
-            <div
+             <div
               style={{
                 width: "400px",
                 height: "250px",
@@ -82,8 +116,9 @@ const ViewOrderModal = ({ show, onClose, order }) => {
                   No
                 </Button>
               </span>
-            </div>
-          </div>
+            </div> 
+            </div>*/}
+          </>
         ) : (
           <>
             {showProductView ? (

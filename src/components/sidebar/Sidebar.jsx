@@ -60,6 +60,19 @@ const Sidebar = ({ children }) => {
     });
   }
 
+  // Conditionally include the "Customer Management" tab for admins and CSR
+  if (
+    loggedUser &&
+    (loggedUser.role === "admin" || loggedUser.role === "CSR")
+  ) {
+    sidebarItems.push({
+      icon: <FaUser />,
+      redirect: "/customer",
+      label: "Customer Management",
+      tab: "customer",
+    });
+  }
+
   // Toggle the sidebar to expand and collapse
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);

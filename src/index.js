@@ -10,6 +10,7 @@ import Vendor from "./pages/vendor/Vendor";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import NotAuthorized from "./pages/NotAuthorized";
 import Profile from "./pages/profile/Profile";
+import Customer from "./pages/customer/Customer";
 import "./custom.scss";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/order" element={<Order />} />
           <Route path="/vendor" element={<Vendor />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/customer" element={<Customer />} />
         </Route>
 
         {/* Protected route for admin only */}
