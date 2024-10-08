@@ -51,13 +51,6 @@ const Sidebar = ({ children }) => {
 
   // Conditionally include the "Inventory Management" tab for admins
   if (loggedUser && loggedUser.role === "Admin") {
-    // sidebarItems.push({
-    //   icon: <MdInventory />,
-    //   redirect: "/inventory",
-    //   label: "Inventory Management",
-    //   tab: "inventory",
-    // });
-
     sidebarItems.push({
       icon: <MdOutlineInventory />,
       redirect: "/category",
@@ -139,6 +132,7 @@ const Sidebar = ({ children }) => {
                   src="/assets/logo/Logo.png"
                   alt="logo"
                   className="d-block mx-auto my-4"
+                  style={{ width: "200px" }}
                 />
                 <button className="expand-button" onClick={toggleSidebar}>
                   <IoMdMenu />

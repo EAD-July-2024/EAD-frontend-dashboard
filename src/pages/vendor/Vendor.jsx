@@ -34,6 +34,7 @@ const Vendor = () => {
       });
   };
 
+  // Fetch vendors on component mount
   useEffect(() => {
     fetchAllVendors();
   }, []);
@@ -53,6 +54,7 @@ const Vendor = () => {
     }
   };
 
+  // Function to view a vendor
   const set = (vendor) => {
     console.log("Viewing vendor", vendor);
     setSelectedVendor(vendor);
@@ -65,6 +67,7 @@ const Vendor = () => {
     setShowAddVendorModal(false);
   };
 
+  // Function to handle editing an existing vendor
   const handleEditVendorOnConfirm = () => {
     console.log("Updating exsisting vendor", newVendorData);
     setVendors((prevVendors) =>
@@ -113,6 +116,7 @@ const Vendor = () => {
     setShowModal(true);
   };
 
+  // Function to handle add new vendor button click
   const handleAdd = () => {
     console.log("Add new vendor button clicked");
     setEditVendorId(null);
@@ -120,17 +124,21 @@ const Vendor = () => {
     setShowAddVendorModal(true);
   };
 
-  const handleToggleStatus = (id) => {
-    const updatedVendors = vendors.map((vendor) =>
-      vendor.id === id ? { ...vendor, status: !vendor.status } : vendor
-    );
-
-    setVendors(updatedVendors); // Update the main vendors state
-  };
-
   const handleAddVendorSuccess = () => {
     setShowAddVendorModal(false);
     fetchAllVendors();
+  };
+
+  const deleteVendor = async (id) => {
+    await axios
+      .delete(`${AUTH_URLS.VENDOR_DELETE_URL}/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        fetchAllVendors();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -185,7 +193,7 @@ const Vendor = () => {
             <tr>
               <th>Vendor ID</th>
               <th>Name</th>
-              <th>No. of Orders</th>
+
               <th>Rating</th>
               <th>Actions</th>
             </tr>
@@ -199,7 +207,7 @@ const Vendor = () => {
               >
                 <td>{vendor.userId}</td>
                 <td>{vendor.fullName}</td>
-                <td>{vendor.Email}</td>
+
                 <td>{vendor.averageRating}</td>
                 <td>
                   <Button
@@ -254,6 +262,7 @@ const Vendor = () => {
         onConfirm={() => {
           console.log("Delete confirmed");
           setShowModal(false);
+          deleteVendor(selectedVendor.id);
         }}
         onClose={() => {
           console.log("Delete cancelled");

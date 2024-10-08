@@ -6,6 +6,7 @@ export default function ProductViewContent({ productData }) {
     productData && productData.imageUrls[0]
   );
 
+  // Handle mouse enter
   const handleMouseEnter = (imgURL) => {
     setSelectedImg(imgURL);
   };

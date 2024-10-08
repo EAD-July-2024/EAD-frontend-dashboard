@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddCustomerModal from "../../components/customer/AddCustomer";
 import ViewCustomerModal from "../../components/customer/ViewCustomer";
 import { PRODUCT_URLS, USER_URLS } from "../../utils/config";
 import axios from "axios";
@@ -96,6 +95,7 @@ const Customer = () => {
     setIsLoading(false);
   };
 
+  // Function to handle editing an existing customer
   const handleEditCustomerOnConfirm = async () => {
     console.log("Updating exsisting customer", newCustomerData);
     setIsLoading(true);
@@ -201,6 +201,7 @@ const Customer = () => {
     setShowModal(false);
   };
 
+  // Function to handle add button click
   const handleAdd = () => {
     setEditModal(false);
     setNewCustomerData({
@@ -214,13 +215,6 @@ const Customer = () => {
     setEditCustomerId(null);
     setShowAddCustomerModal(true);
   };
-
-  // const handleToggleStatus = (id) => {
-  //   const updatedCustomers = customers.map((customer) =>
-  //     customer.id === id ? { ...customer, status: !customer.status } : customer
-  //   );
-  //   setCustomers(updatedCustomers);
-  // };
 
   //handle customer view
   const handleCustomerView = (id) => {
@@ -320,7 +314,6 @@ const Customer = () => {
                   <th>Customer Name</th>
                   <th>Email </th>
                   <th>Status</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -341,22 +334,6 @@ const Customer = () => {
                     </td>
                     <td onClick={() => handleCustomerView(customer.userId)}>
                       {customer.isApproved ? "Approved" : "Pending"}
-                    </td>
-
-                    <td>
-                      <Button
-                        variant="warning"
-                        className="me-2"
-                        onClick={() => handleEdit(customer.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleDelete(customer.id)}
-                      >
-                        Delete
-                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -408,28 +385,6 @@ const Customer = () => {
           </>
         )}
       </div>
-
-      {/* Add Customer Modal */}
-      <AddCustomerModal
-        show={showAddCustomerModal}
-        onClose={() => setShowAddCustomerModal(false)}
-        onAddCustomer={handleAddCustomer}
-        initialData={newCustomerData}
-        editModal={editModal}
-        selectedImages={selectedImages}
-        setSelectedImages={setSelectedImages}
-      />
-
-      {/* View Customer Modal */}
-      {/* <ViewCustomer
-        show={showViewCustomerModal}
-        onClose={() => setShowViewCustomerModal(false)}
-        onAddCustomer={handleAddCustomer}
-        customerData={newCustomerData}
-        editModal={editModal}
-        selectedImages={selectedImages}
-        setSelectedImages={setSelectedImages}
-      /> */}
 
       {/* Confirmation of delete customer */}
       <ConfirmModal

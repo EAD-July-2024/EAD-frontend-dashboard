@@ -8,11 +8,13 @@ const AddVendorForm = (initialData) => {
     setVendorData(initialData);
   }, [initialData]);
 
+  // Handle data change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setVendorData({ ...vendorData, [name]: value });
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     onAddVendor(vendorData);

@@ -37,18 +37,6 @@ const AddVendorModal = ({
 
     if (initialData && editVendorId) {
       console.log("Editing Vendor");
-      // await axios
-      // .put(`${AUTH_URLS.REGISTER_URL}/${editVendorId}`, newVendorData)
-      // .then((response) => {
-      //   console.log(response.data);
-      //   setIsLoading(false);
-      //   setShowConfirm(false);
-      //   onSuccess();
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      //   setIsLoading(false);
-      // });
       setIsLoading(false);
     } else {
       await axios
@@ -66,9 +54,6 @@ const AddVendorModal = ({
     }
   };
 
-  console.log("Initial Data", initialData);
-  console.log("editVendorId", editVendorId);
-
   return (
     <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
@@ -76,7 +61,7 @@ const AddVendorModal = ({
           <Modal.Title>Confirm New Vendor</Modal.Title>
         ) : (
           <Modal.Title>
-            {initialData?.id ? "Edit Vendor" : "Add New Vendor"}
+            {initialData?.userId ? "Edit Vendor" : "Add New Vendor"}
           </Modal.Title>
         )}
       </Modal.Header>
