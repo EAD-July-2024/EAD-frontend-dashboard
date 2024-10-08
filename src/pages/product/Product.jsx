@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddProductModal from "../../components/product/AddProduct";
 import ViewProduct from "../../components/product/ViewProduct";
-import { PRODUCT_URLS } from "../../utils/config";
+import { PRODUCT_URLS, CATEGORY_URLS } from "../../utils/config";
 import axios from "axios";
 
 const Product = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRating, setSelectedRating] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
   const [selectedImages, setSelectedImages] = useState([]);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
@@ -22,9 +23,9 @@ const Product = () => {
   const [newProductData, setNewProductData] = useState(null);
   const [editProductId, setEditProductId] = useState(null);
   const [isProductUpdated, setIsProductUpdated] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const loggedInUser = JSON.parse(localStorage.getItem("auth"));
-  console.log("Logged in user: ", loggedInUser);
 
   // Function to handle product fetch
   const fetchProducts = async () => {
@@ -40,9 +41,22 @@ const Product = () => {
     }
   };
 
+  //Fetch all categories
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(CATEGORY_URLS.CATEGORY_GET_ALL_URL);
+      const data = await response.json();
+      console.log("Categories: ", data);
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories", error);
+    }
+  };
+
   // Fetch products on component mount
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
     setIsLoading(false);
   }, [loggedInUser && isProductUpdated]);
 
@@ -149,9 +163,9 @@ const Product = () => {
   };
 
   // Function to handle category filter change
-  // const handleRatingChange = (e) => {
-  //   setSelectedRating(e.target.value);
-  // };
+  const handleCategoryFilterChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
 
   // Function to filter products based on search query and category
   const filteredProducts = products.filter((product) => {
@@ -160,8 +174,8 @@ const Product = () => {
       // product.vendor.toLowerCase().includes(searchQuery) ||
       product.price.toString().includes(searchQuery);
 
-    const matchesRating = selectedRating
-      ? product.category.toString() === selectedRating
+    const matchesRating = selectedCategory
+      ? product.categoryName.toString() === selectedCategory.toString()
       : true;
 
     return matchesSearch && matchesRating;
@@ -293,18 +307,18 @@ const Product = () => {
           />
 
           {/* Filter by Rating */}
-          {/* <select
+          <select
             className="form-select w-25"
-            value={selectedRating}
-            onChange={handleRatingChange}
+            value={selectedCategory}
+            onChange={handleCategoryFilterChange}
           >
-            <option value="">Filter by Rating</option>
-            <option value="1">1 Star</option>
-            <option value="2">2 Stars</option>
-            <option value="3">3 Stars</option>
-            <option value="4">4 Stars</option>
-            <option value="5">5 Stars</option>
-          </select> */}
+            <option value="">Filter by Category (All)</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
