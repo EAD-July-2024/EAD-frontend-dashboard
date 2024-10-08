@@ -28,7 +28,6 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/product" element={<Product />} />
           <Route path="/order" element={<Order />} />
-          <Route path="/vendor" element={<Vendor />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/customer" element={<Customer />} />
         </Route>
@@ -37,6 +36,7 @@ const App = () => {
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/category" element={<Category />} />
+          <Route path="/vendor" element={<Vendor />} />
         </Route>
 
         {/* Default route to redirect to login */}

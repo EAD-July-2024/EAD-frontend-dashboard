@@ -23,10 +23,15 @@ const Product = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [isProductUpdated, setIsProductUpdated] = useState(false);
 
+  const loggedInUser = JSON.parse(localStorage.getItem("auth"));
+  console.log("Logged in user: ", loggedInUser);
+
   // Function to handle product fetch
   const fetchProducts = async () => {
     try {
-      const response = await fetch(PRODUCT_URLS.PRODUCT_GET_ALL_URL);
+      const response = await fetch(
+        `${PRODUCT_URLS.PRODUCT_GET_BY_ROLE_URL}/${loggedInUser.userId}`
+      );
       const data = await response.json();
       console.log("Products: ", data);
       setProducts(data);
@@ -39,7 +44,7 @@ const Product = () => {
   useEffect(() => {
     fetchProducts();
     setIsLoading(false);
-  }, [isProductUpdated]);
+  }, [loggedInUser && isProductUpdated]);
 
   // Function to handle adding a new product or editing an existing one
   const handleAddProduct = (product, images) => {

@@ -37,12 +37,6 @@ const Sidebar = ({ children }) => {
       tab: "product",
     },
     {
-      icon: <FaUser />,
-      redirect: "/vendor",
-      label: "Vendor Management",
-      tab: "vendor",
-    },
-    {
       icon: <FaBorderAll />,
       redirect: "/order",
       label: "Order Management",
@@ -64,6 +58,13 @@ const Sidebar = ({ children }) => {
       redirect: "/category",
       label: "Category Management",
       tab: "category",
+    });
+
+    sidebarItems.push({
+      icon: <FaUser />,
+      redirect: "/vendor",
+      label: "Vendor Management",
+      tab: "vendor",
     });
   }
 
