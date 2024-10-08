@@ -31,6 +31,7 @@ export const FCM_URLS = {
 export const ORDER_URLS = {
   ORDER_CREATE_URL: `${BACKEND_API_URL}/api/order`,
   ORDER_GET_ALL_URL: `${BACKEND_API_URL}/api/order`,
+  ORDER_GET_BY_ROLE_URL: `${BACKEND_API_URL}/api/order/getByRole`,
   ORDER_GET_BY_ID_URL: `${BACKEND_API_URL}/api/order`,
   ORDER_UPDATE_URL: `${BACKEND_API_URL}/api/order/update`,
   ORDER_DELETE_URL: `${BACKEND_API_URL}/api/order/orderDelete`,

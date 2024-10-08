@@ -23,10 +23,14 @@ const Order = () => {
   const [newOrderData, setNewOrderData] = useState(null);
   const [editOrderId, setEditOrderId] = useState(null);
 
+  const loggedInUser = JSON.parse(localStorage.getItem("auth"));
+
   // Get all Orders
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(ORDER_URLS.ORDER_GET_ALL_URL);
+      const response = await axios.get(
+        `${ORDER_URLS.ORDER_GET_BY_ROLE_URL}/${loggedInUser.userId}`
+      );
       const modifiedOrders = response.data.map(({ id, ...rest }) => rest);
       setOrders(modifiedOrders);
     } catch (error) {
@@ -190,6 +194,7 @@ const Order = () => {
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
             <option value="">All</option>
+            <option value="purchased">Purchased</option>
             <option value="processing">Processing</option>
             <option value="dispatched">Dispatched</option>
             <option value="delivered">Delivered</option>

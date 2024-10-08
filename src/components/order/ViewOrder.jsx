@@ -9,6 +9,8 @@ const ViewOrderModal = ({ show, onClose, order }) => {
   const [orderStatus, setOrderStatus] = useState("");
   const [orderItems, setOrderItems] = useState([]);
 
+  const loggedInUser = JSON.parse(localStorage.getItem("auth"));
+
   useEffect(() => {
     if (order) {
       setOrderStatus(order.status);
@@ -29,6 +31,8 @@ const ViewOrderModal = ({ show, onClose, order }) => {
   if (!order) return null; // Return null if no order is provided
 
   console.log("Order", order);
+  console.log("order.orderItems", order.orderItems);
+  console.log("Order", order.status);
   console.log("order.orderItems", order.orderItems);
 
   return (
@@ -143,7 +147,9 @@ const ViewOrderModal = ({ show, onClose, order }) => {
                       borderRadius: "20px",
                       marginLeft: "10px",
                     }}
-                    value={orderStatus}
+                    disabled={loggedInUser.role !== "Admin"}
+                    // defaultValue={order.status} // Corrected this line
+                    value={order.status || ""}
                     onChange={(e) => setOrderStatus(e.target.value)}
                   >
                     <option value="">All</option>
@@ -192,7 +198,7 @@ const ViewOrderModal = ({ show, onClose, order }) => {
                                 padding: "5px 10px",
                                 borderRadius: "20px",
                               }}
-                              value={item.status}
+                              defaultValue={item.status}
                               // onChange={(e) => {
                               //   const updatedItems = orderItems.map((i) => {
                               //     if (i.productId === item.productId) {
