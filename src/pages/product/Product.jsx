@@ -45,12 +45,16 @@ const Product = () => {
   const handleAddProduct = (product, images) => {
     if (editProductId !== null) {
       // Edit mode
+      product.vendor = JSON.parse(localStorage.getItem("auth")).userId;
       setNewProductData(product);
       setSelectedImages(images);
       setShowEditConfirmModal(true);
       setShowAddProductModal(false);
     } else {
       // Add mode
+      product.vendor = JSON.parse(localStorage.getItem("auth")).userId;
+      console.log("Adding new product", product);
+      console.log("Selected images", images);
       setNewProductData(product);
       setSelectedImages(images);
       setShowAddConfirmModal(true);
@@ -161,7 +165,8 @@ const Product = () => {
   // Function to handle edit button click
   const handleEdit = (id) => {
     setEditModal(true);
-    const productToEdit = products.find((product) => product.id === id);
+    const productToEdit = products.find((product) => product.productId === id);
+    console.log("Product to edit: ", productToEdit);
     setNewProductData(productToEdit);
     setEditProductId(id);
     setShowAddProductModal(true);
@@ -176,13 +181,17 @@ const Product = () => {
 
   // Function to handle delete confirmation ///////////////////////////////////// Check this /////////////////////////////////////
   const handleDeleteConfirm = () => {
-    console.log("Delete confirmed");
+    console.log(
+      "Delete confirmed",
+      JSON.parse(localStorage.getItem("auth")).userId,
+      editProductId
+    );
 
     axios
-      .put(PRODUCT_URLS.PRODUCT_DELETE_URL, {
+      .delete(PRODUCT_URLS.PRODUCT_DELETE_URL, {
         data: {
           productId: editProductId,
-          vendorId: "VEND609551",
+          vendorId: JSON.parse(localStorage.getItem("auth")).userId,
           isDeleted: true,
         },
       })
@@ -253,9 +262,11 @@ const Product = () => {
       {/* Header text */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>List of All Products</h1>
-        <Button variant="primary" onClick={handleAdd}>
-          Add New Product
-        </Button>
+        {JSON.parse(localStorage.getItem("auth")).role === "Vendor" && (
+          <Button variant="primary" onClick={handleAdd}>
+            Add New Product
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
@@ -354,13 +365,13 @@ const Product = () => {
                       <Button
                         variant="warning"
                         className="me-2"
-                        onClick={() => handleEdit(product.id)}
+                        onClick={() => handleEdit(product.productId)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="danger"
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDelete(product.productId)}
                       >
                         Delete
                       </Button>
@@ -417,27 +428,30 @@ const Product = () => {
       </div>
 
       {/* Add Product Modal */}
-      <AddProductModal
-        show={showAddProductModal}
-        onClose={() => setShowAddProductModal(false)}
-        onAddProduct={handleAddProduct}
-        initialData={newProductData}
-        editModal={editModal}
-        selectedImages={selectedImages}
-        setSelectedImages={setSelectedImages}
-      />
+      {showAddProductModal && (
+        <AddProductModal
+          show={showAddProductModal}
+          onClose={() => setShowAddProductModal(false)}
+          onAddProduct={handleAddProduct}
+          initialData={newProductData}
+          editModal={editModal}
+          selectedImages={selectedImages}
+          setSelectedImages={setSelectedImages}
+        />
+      )}
 
       {/* View Product Modal */}
-      <ViewProduct
-        show={showViewProductModal}
-        onClose={() => setShowViewProductModal(false)}
-        onAddProduct={handleAddProduct}
-        productData={newProductData}
-        editModal={editModal}
-        selectedImages={selectedImages}
-        setSelectedImages={setSelectedImages}
-      />
-
+      {showViewProductModal && (
+        <ViewProduct
+          show={showViewProductModal}
+          onClose={() => setShowViewProductModal(false)}
+          onAddProduct={handleAddProduct}
+          productData={newProductData}
+          editModal={editModal}
+          selectedImages={selectedImages}
+          setSelectedImages={setSelectedImages}
+        />
+      )}
       {/* Confirmation of delete product */}
       <ConfirmModal
         show={showModal}
