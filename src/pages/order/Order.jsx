@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
-import AddOrderModal from "../../components/order/AddOrder";
 import ViewOrderModal from "../../components/order/ViewOrder";
 import axios from "axios";
 import { ORDER_URLS } from "../../utils/config";
@@ -18,11 +16,9 @@ const Order = () => {
   const [cancelOrderId, setCancelOrderId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
-
   const [orders, setOrders] = useState([]);
   const [newOrderData, setNewOrderData] = useState(null);
   const [editOrderId, setEditOrderId] = useState(null);
-
   const loggedInUser = JSON.parse(localStorage.getItem("auth"));
 
   // Get all Orders
@@ -38,31 +34,19 @@ const Order = () => {
     }
   };
 
+  // Fetch Orders on component mount
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  // Function to handle adding a new Order or editing an existing one
-  const handleAddOrder = (Order) => {
-    if (editOrderId !== null) {
-      // Edit mode
-      setNewOrderData(Order);
-      setShowEditConfirmModal(true);
-      setShowAddOrderModal(false);
-    } else {
-      // Add mode
-      setNewOrderData(Order);
-      setShowAddConfirmModal(true);
-      setShowAddOrderModal(false);
-    }
-  };
-
+  // Function to handle add Order on confirm
   const handleAddOrderOnConfirm = () => {
     console.log("Adding new Order", newOrderData);
     setOrders((prevOrders) => [...prevOrders, newOrderData]);
     setShowAddOrderModal(false);
   };
 
+  // Function to handle cancel Order on confirm
   const handleCancelOrderOnConfirm = () => {
     console.log("Cancelling existing Order:", cancelOrderId);
 
@@ -88,6 +72,7 @@ const Order = () => {
     setShowCancelConfirmModal(false);
   };
 
+  // Function to handle edit Order on confirm
   const handleEditOrderOnConfirm = () => {
     console.log("Updating exsisting Order", newOrderData);
     setOrders((prevOrders) =>
@@ -118,41 +103,6 @@ const Order = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Function to handle cancel button click
-  const handleCancel = (id) => {
-    console.log(`Cancel Order with ID: ${id}`);
-    setCancelOrderId(id);
-    setShowCancelConfirmModal(true);
-  };
-
-  // Function to handle edit button click
-  const handleEdit = (id) => {
-    const OrderToEdit = orders.find((Order) => Order.id === id);
-    setNewOrderData(OrderToEdit);
-    setEditOrderId(id);
-    setShowAddOrderModal(true); // Open the modal
-  };
-
-  // Function to handle delete button click
-  const handleDelete = (id) => {
-    console.log(`Delete Order with ID: ${id}`);
-    setShowModal(true);
-  };
-
-  const handleAdd = () => {
-    console.log("Add new Order button clicked");
-    // Reset the Order data to clear the fields
-    setNewOrderData({ id: "", name: "", vendor: "", total: "", rating: 1 }); // Reset fields
-    setEditOrderId(null); // Ensure edit mode is reset
-    setShowAddOrderModal(true);
-  };
-
-  const handleOrderClick = (e, id) => {
-    e.preventDefault();
-    console.log(`Order with ID: ${id} clicked`);
-    setShowOrderModal(true);
-  };
-
   // Function to handle displaying order details
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
@@ -163,10 +113,7 @@ const Order = () => {
     <div className="px-4 my-4">
       {/* Header text */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>List of All Orders</h1>
-        <Button variant="primary" onClick={handleAdd}>
-          Add New Order
-        </Button>
+        <h1>Order Management</h1>
       </div>
 
       {/* Filters */}
@@ -240,14 +187,6 @@ const Order = () => {
           </tbody>
         </Table>
       </div>
-
-      {/* Add Order Modal */}
-      <AddOrderModal
-        show={showAddOrderModal}
-        onClose={() => setShowAddOrderModal(false)}
-        onAddOrder={handleAddOrder}
-        initialData={newOrderData}
-      />
 
       {/* Confirmation of delete Order */}
       <ConfirmModal

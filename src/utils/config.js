@@ -5,6 +5,8 @@ const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL;
 export const AUTH_URLS = {
   LOGIN_URL: `${BACKEND_API_URL}/api/auth/login`,
   REGISTER_URL: `${BACKEND_API_URL}/api/auth/register`,
+  VENDOR_DELETE_URL: `${BACKEND_API_URL}/api/auth/vendorDelete`,
+  APPROVE_CUSTOMER: `${BACKEND_API_URL}/api/auth/approveCustomer`,
 };
 
 // User
@@ -35,6 +37,11 @@ export const ORDER_URLS = {
   ORDER_GET_BY_ID_URL: `${BACKEND_API_URL}/api/order`,
   ORDER_UPDATE_URL: `${BACKEND_API_URL}/api/order/update`,
   ORDER_DELETE_URL: `${BACKEND_API_URL}/api/order/orderDelete`,
+};
+
+// Order Items
+export const ORDER_ITEMS = {
+  ORDER_UPDATE_ITEMS_URL: `${BACKEND_API_URL}/api/orderItem/updateStatus`,
 };
 
 //Category

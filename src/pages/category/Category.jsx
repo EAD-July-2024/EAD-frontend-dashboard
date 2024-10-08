@@ -3,7 +3,6 @@ import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
 import AddCategoryModal from "../../components/category/AddCategory";
-import ViewCategoryModal from "../../components/category/ViewCategory";
 import { CATEGORY_URLS } from "../../utils/config";
 import axios from "axios";
 
@@ -39,10 +38,22 @@ const Category = () => {
   };
 
   // Toggle function to change the status
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = async (id) => {
+    console.log("Toggling status for category with ID:", id);
     const updatedCategories = categorys.map((category) =>
       category.id === id ? { ...category, status: !category.status } : category
     );
+
+    await axios
+      .put(`${CATEGORY_URLS.CATEGORY_UPDATE_URL}/${id}`, {
+        status: updatedCategories.find((category) => category.id === id).status,
+      })
+      .then((response) => {
+        alert("Category updated successfully!");
+      })
+      .catch((error) => {
+        alert("Something went wrong! Please try again later.");
+      });
     setCategorys(updatedCategories);
   };
 
@@ -126,12 +137,11 @@ const Category = () => {
   // Function to handle delete confirmation ///////////////////////////////////// Check this /////////////////////////////////////
   const handleDeleteConfirm = () => {
     console.log("Delete confirmed");
-
     axios
       .put(CATEGORY_URLS.CATEGORY_DELETE_URL, {
         data: {
           categoryId: editCategoryId,
-          vendorId: "VEND609551",
+          vendorId: JSON.parse(localStorage.getItem("auth")).userId,
           isDeleted: true,
         },
       })
@@ -160,13 +170,6 @@ const Category = () => {
     setEditCategoryId(null);
     setShowAddCategoryModal(true);
   };
-
-  // const handleToggleStatus = (id) => {
-  //   const updatedCategorys = categorys.map((category) =>
-  //     category.id === id ? { ...category, status: !category.status } : category
-  //   );
-  //   setCategorys(updatedCategorys);
-  // };
 
   //handle category view
   const handleCategoryView = (id) => {
@@ -286,7 +289,7 @@ const Category = () => {
                         type="switch"
                         id={`custom-switch-${category.categoryId}`}
                         label={category.status}
-                        checked={category.status === "Active"}
+                        defaultChecked={category.status === "Active"}
                         onChange={() => handleToggleStatus(category.categoryId)}
                       />
                     </td>
@@ -367,19 +370,6 @@ const Category = () => {
         selectedImages={selectedImages}
         setSelectedImages={setSelectedImages}
       />
-
-      {/* View Category Modal */}
-      {/* <ViewCategory
-        show={showViewCategoryModal}
-        onClose={() => setShowViewCategoryModal(false)}
-        onAddCategory={handleAddCategory}
-        categoryData={newCategoryData}
-        editModal={editModal}
-        selectedImages={selectedImages}
-        setSelectedImages={setSelectedImages}
-      /> */}
-
-      {/* Confirmation of delete category */}
       <ConfirmModal
         show={showModal}
         title="Delete Category"

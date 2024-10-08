@@ -117,6 +117,7 @@ const Product = () => {
     setIsLoading(false);
   };
 
+  // Function to handle editing an existing product
   const handleEditProductOnConfirm = async () => {
     console.log("Updating exsisting product", newProductData);
     setIsLoading(true);
@@ -226,6 +227,7 @@ const Product = () => {
     setShowModal(false);
   };
 
+  // Function to handle add button click
   const handleAdd = () => {
     setEditModal(false);
     setNewProductData({
@@ -238,13 +240,6 @@ const Product = () => {
     setSelectedImages([]);
     setEditProductId(null);
     setShowAddProductModal(true);
-  };
-
-  const handleToggleStatus = (id) => {
-    const updatedProducts = products.map((product) =>
-      product.id === id ? { ...product, status: !product.status } : product
-    );
-    setProducts(updatedProducts);
   };
 
   //handle product view

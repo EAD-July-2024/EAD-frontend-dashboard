@@ -1,43 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import Table from "react-bootstrap/Table";
-import ConfirmModal from "../../components/confirm-modal/ConfirmModal";
+import { Modal, Button } from "react-bootstrap";
+import { AUTH_URLS } from "../../utils/config";
+import axios from "axios";
 
 const ViewCustomerModal = ({ show, onClose, customer }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCustomerView, setShowCustomerView] = useState(false);
   const [customerStatus, setCustomerStatus] = useState("");
-  const [customerItems, setCustomerItems] = useState([]);
 
-  console.log("customer", customer);
-
+  //initialize customer status
   useEffect(() => {
     if (customer) {
       setCustomerStatus(customer.isApproved ? "Approved" : "Pending");
-      setCustomerItems(customer.customerItems);
     }
   }, [customer]);
 
-  const handleConfirmationModel = () => {
+  //approve customer
+  const handleConfirmationModel = async () => {
+    await axios.put(`${AUTH_URLS.REGISTER_URL}/${customer.userId}`);
     setShowModal(!showModal);
   };
 
-  const handleCustomerView = () => {
-    setShowCustomerView(!showCustomerView);
-  };
-
-  const customerData = {};
-
-  if (!customer) return null; // Return null if no customer is provided
-
-  console.log("Customer", customer);
-  console.log("customer.customerItems", customer.customerItems);
-
   return (
-    <Modal show={show} onHide={onClose} size="md" scrollable>
+    <Modal
+      show={show}
+      onHide={() => {
+        setShowModal(false);
+        onClose();
+      }}
+      size="md"
+      scrollable
+    >
       <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
         {showModal ? (
-          <Modal.Title>Confirm Save Changes</Modal.Title>
+          <Modal.Title>Approve Customer</Modal.Title>
         ) : (
           <Modal.Title>Customer Details - {customer.fullName}</Modal.Title>
         )}
@@ -45,7 +41,7 @@ const ViewCustomerModal = ({ show, onClose, customer }) => {
       <Modal.Body style={{ backgroundColor: "#f7f8ff" }}>
         {showModal ? (
           <div>
-            <span>Are you sure you want to save changes?</span>
+            <span>Are you sure you want to approve this customer?</span>
             <div
               style={{
                 display: "flex",
@@ -55,7 +51,9 @@ const ViewCustomerModal = ({ show, onClose, customer }) => {
             >
               <Button
                 variant="warning"
-                onClick={handleConfirmationModel}
+                onClick={() => {
+                  setShowModal(false);
+                }}
                 style={{ minWidth: "80px", marginRight: "10px" }}
               >
                 No
@@ -89,19 +87,14 @@ const ViewCustomerModal = ({ show, onClose, customer }) => {
                 </p>
                 <p>
                   <strong>Customer Status:</strong>{" "}
-                  <select
+                  <span
                     style={{
-                      padding: "5px 10px",
-                      bcustomerRadius: "20px",
-                      marginLeft: "10px",
+                      color: customerStatus !== "Pending" ? "blue" : "red",
                     }}
-                    value={customerStatus}
-                    onChange={(e) => setCustomerStatus(e.target.value)}
                   >
-                    <option value="">All</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Pending">Pending</option>
-                  </select>
+                    {" "}
+                    {customerStatus}
+                  </span>
                 </p>
               </div>
             )}
@@ -109,7 +102,7 @@ const ViewCustomerModal = ({ show, onClose, customer }) => {
         )}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: "#edf2fd" }}>
-        {!showModal && (
+        {!showModal && customerStatus == "Pending" && (
           <>
             {/* <span>
               <Button variant="danger" onClick={onClose}>
@@ -118,7 +111,7 @@ const ViewCustomerModal = ({ show, onClose, customer }) => {
             </span> */}
             <span>
               <Button variant="primary" onClick={handleConfirmationModel}>
-                Save Changes
+                Approve Customer
               </Button>
             </span>
           </>

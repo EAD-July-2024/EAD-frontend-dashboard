@@ -57,11 +57,6 @@ const UserProfile = ({ show, onClose, vendorData }) => {
                 <b>Email:</b> Shehangunasekara2019@gmail.com
               </p>
             </Row>{" "}
-            <Row style={{ display: "flex", flexDirection: "row" }}>
-              <p>
-                <b>No. of Orders:</b> 10
-              </p>
-            </Row>
           </Col>
           <Col xs={1}>
             {" "}

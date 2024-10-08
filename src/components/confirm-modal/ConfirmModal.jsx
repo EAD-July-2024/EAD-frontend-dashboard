@@ -18,12 +18,6 @@ const ConfirmModal = ({ show, title, body, onConfirm, onClose, isLoading }) => {
           }
           onClick={onConfirm}
         >
-          {/* {title.includes("Delete")
-            ? "Delete"
-            : title.includes("Logout")
-            ? "Logout"
-            : "Confirm"} */}
-
           {isLoading ? (
             <span
               class="spinner-border spinner-border-sm"

@@ -11,6 +11,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Bottom links
   const BottomLinks = () => {
     return (
       <Row>

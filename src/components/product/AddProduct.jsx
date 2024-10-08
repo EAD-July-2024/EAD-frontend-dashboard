@@ -3,19 +3,6 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import { CATEGORY_URLS } from "../../utils/config";
 
-const vendorOptions = [
-  { value: "V0001", label: "Vendor 1" },
-  { value: "V0002", label: "Vendor 2" },
-  { value: "V0003", label: "Vendor 3" },
-];
-
-const categoryOptions = [
-  { value: "CAT001", label: "Electronics" },
-  { value: "CAT002", label: "Clothing" },
-  { value: "CAT003", label: "Beauty & Personal Care" },
-  { value: "CAT004", label: "Home & Kitchen" },
-];
-
 const AddProductModal = ({
   show,
   onClose,
@@ -28,19 +15,12 @@ const AddProductModal = ({
   const [productData, setProductData] = useState(initialData);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [vendorID, setVendorID] = useState("");
-
   const [categoryList, setCategoryList] = useState([{}]);
 
-  console.log("cart list", categoryList);
-
-  console.log("initialData: ", productData);
-
+  //initialize data
   useEffect(() => {
     const localData = localStorage.getItem("auth");
     const data = JSON.parse(localData);
-    console.log("data------------: ", data);
-    // setVendorID(data.userId);
     handleChange({
       target: {
         name: "vendor",
@@ -49,10 +29,12 @@ const AddProductModal = ({
     });
   }, []);
 
+  //inititalize all data
   useEffect(() => {
     setSelectedImages(initialData?.imageUrls || []);
   }, [initialData]);
 
+  //fetch category list
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
@@ -75,14 +57,12 @@ const AddProductModal = ({
     fetchCategoryList();
   }, []);
 
-  const handleConfirmationModel = () => {
-    setShowModal(!showModal);
-  };
-
+  // Handle modal close
   const handleModalClose = () => {
     setShowConfirm(true);
   };
 
+  // Handle confirm modal close
   const handleConfirmClose = () => {
     setProductData({});
     setSelectedImages([]);
@@ -90,6 +70,7 @@ const AddProductModal = ({
     onClose();
   };
 
+  // Handle cancel modal close
   const handleCancelClose = () => {
     setShowConfirm(false);
   };
@@ -108,27 +89,19 @@ const AddProductModal = ({
     setSelectedImages((prevImages) => [...prevImages, ...newImages]);
   };
 
+  // Handle image remove
   const handleRemoveImage = (index) => {
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
   };
 
+  // Handle image replace
   const handleReplaceImage = (index, e) => {
     const file = e.target.files[0];
     const newImages = [...selectedImages];
     newImages[index] = { file, url: URL.createObjectURL(file) };
     setSelectedImages(newImages);
-  };
-
-  // Handle vendor select
-  const handleVendorChange = (selectedOption) => {
-    handleChange({
-      target: {
-        name: "vendor",
-        value: selectedOption?.value || "",
-      },
-    });
   };
 
   // Handle category select
@@ -158,9 +131,6 @@ const AddProductModal = ({
     <>
       <Modal show={show} onHide={handleModalClose} size="xl" scrollable>
         <Modal.Header closeButton style={{ backgroundColor: "#edf2fd" }}>
-          {/* <Modal.Title>
-            {initialData?.id ? "Edit Product" : "Add New Product"}
-          </Modal.Title> */}
           {showModal ? (
             <Modal.Title>Confirm Save Changes</Modal.Title>
           ) : initialData?.id ? (
@@ -197,21 +167,6 @@ const AddProductModal = ({
                     required
                   />
                 </Form.Group>
-
-                {/* <Form.Group controlId="vendor" className="mt-2">
-                  <Form.Label>Vendor</Form.Label>
-                  <Select
-                    options={vendorOptions}
-                    value={
-                      vendorOptions.find(
-                        (option) => option.value === productData?.vendorName
-                      ) || null
-                    }
-                    onChange={handleVendorChange}
-                    isSearchable={true}
-                    placeholder="Select a vendor"
-                  />
-                </Form.Group> */}
 
                 <Form.Group controlId="category" className="mt-2">
                   <Form.Label>Category</Form.Label>
@@ -270,7 +225,6 @@ const AddProductModal = ({
                 </Form.Group>
               </Col>
 
-              {/* Right Half - Image Upload */}
               <Col md={6}>
                 <Form.Group controlId="images" className="mt-2">
                   <Form.Label>Images (Max 5)</Form.Label>
@@ -331,9 +285,6 @@ const AddProductModal = ({
           Are you sure you want to close? Any unsaved changes will be lost.
         </Modal.Body>
         <Modal.Footer>
-          {/* <Button variant="secondary" onClick={handleCancelClose}>
-            Cancel
-          </Button> */}
           <Button variant="danger" onClick={handleConfirmClose}>
             Close
           </Button>
