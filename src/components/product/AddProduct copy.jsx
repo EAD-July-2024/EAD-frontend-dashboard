@@ -81,6 +81,15 @@ const AddProductModal = ({
     });
   };
 
+  useEffect(() => {
+    handleChange({
+      target: {
+        name: "vendor",
+        value: selectedOption?.value || "",
+      },
+    });
+  }, []);
+
   // Handle category select
   const handleCategoryChange = (selectedOption) => {
     handleChange({
@@ -155,21 +164,6 @@ const AddProductModal = ({
                     placeholder="Select a vendor"
                   />
                 </Form.Group> */}
-
-                <Form.Group controlId="vendor" className="mt-2">
-                  <Form.Label>Vendor</Form.Label>
-                  <Select
-                    options={vendorOptions}
-                    value={
-                      vendorOptions.find(
-                        (option) => option.value === productData?.vendorName
-                      ) || null
-                    }
-                    onChange={handleVendorChange}
-                    isSearchable={true}
-                    placeholder="Select a vendor"
-                  />
-                </Form.Group>
 
                 <Form.Group controlId="category" className="mt-2">
                   <Form.Label>Category</Form.Label>
