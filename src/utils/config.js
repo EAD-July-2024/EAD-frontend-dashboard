@@ -16,6 +16,7 @@ export const USER_URLS = {
 export const PRODUCT_URLS = {
   PRODUCT_CREATE_URL: `${BACKEND_API_URL}/api/product`,
   PRODUCT_GET_ALL_URL: `${BACKEND_API_URL}/api/product`,
+  PRODUCT_GET_BY_ROLE_URL: `${BACKEND_API_URL}/api/product/getByRole`,
   PRODUCT_GET_BY_ID_URL: `${BACKEND_API_URL}/api/product`,
   PRODUCT_UPDATE_URL: `${BACKEND_API_URL}/api/product/update`,
   PRODUCT_DELETE_URL: `${BACKEND_API_URL}/api/product/productDelete`,
