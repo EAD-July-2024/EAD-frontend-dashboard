@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
+import { CATEGORY_URLS } from "../../utils/config";
 
 const vendorOptions = [
   { value: "V0001", label: "Vendor 1" },
@@ -27,8 +28,52 @@ const AddProductModal = ({
   const [productData, setProductData] = useState(initialData);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [vendorID, setVendorID] = useState("");
+
+  const [categoryList, setCategoryList] = useState([{}]);
+
+  console.log("cart list", categoryList);
 
   console.log("initialData: ", productData);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("auth");
+    const data = JSON.parse(localData);
+    console.log("data------------: ", data);
+    // setVendorID(data.userId);
+    handleChange({
+      target: {
+        name: "vendor",
+        value: data?.userId || "",
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    setSelectedImages(initialData?.imageUrls || []);
+  }, [initialData]);
+
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      try {
+        const response = await fetch(CATEGORY_URLS.CATEGORY_GET_ALL_URL);
+        const data = await response.json();
+        console.log("categoryList: ", data);
+        let catList = [];
+        for (let i = 0; i < data.length; i++) {
+          catList.push({
+            value: data[i].categoryId,
+            label: data[i].name,
+          });
+        }
+        setCategoryList(catList);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategoryList();
+  }, []);
 
   const handleConfirmationModel = () => {
     setShowModal(!showModal);
@@ -135,7 +180,7 @@ const AddProductModal = ({
                     <Form.Control
                       type="text"
                       name="id"
-                      value={productData?.id || ""}
+                      value={productData?.productId || ""}
                       onChange={handleChange}
                       disabled
                     />
@@ -168,28 +213,13 @@ const AddProductModal = ({
                   />
                 </Form.Group> */}
 
-                <Form.Group controlId="vendor" className="mt-2">
-                  <Form.Label>Vendor</Form.Label>
-                  <Select
-                    options={vendorOptions}
-                    value={
-                      vendorOptions.find(
-                        (option) => option.value === productData?.vendorName
-                      ) || null
-                    }
-                    onChange={handleVendorChange}
-                    isSearchable={true}
-                    placeholder="Select a vendor"
-                  />
-                </Form.Group>
-
                 <Form.Group controlId="category" className="mt-2">
                   <Form.Label>Category</Form.Label>
                   <Select
-                    options={categoryOptions}
+                    options={categoryList}
                     value={
-                      categoryOptions.find(
-                        (option) => option.value === productData?.category
+                      categoryList.find(
+                        (option) => option.label === productData?.category
                       ) || null
                     }
                     onChange={handleCategoryChange}
@@ -255,7 +285,7 @@ const AddProductModal = ({
                     {selectedImages.map((image, index) => (
                       <div key={index} className="mb-2">
                         <img
-                          src={image.url}
+                          src={initialData?.id ? image : image.url}
                           alt={`Uploaded preview ${index + 1}`}
                           style={{
                             width: "200px",
