@@ -32,9 +32,9 @@ const App = () => {
           <Route path="/customer" element={<Customer />} />
         </Route>
 
-        {/* Protected route for admin only */}
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          <Route path="/inventory" element={<Inventory />} />
+        {/* Protected route for Admin only */}
+        <Route element={<ProtectedRoute requiredRole="Admin" />}>
+          {/* <Route path="/inventory" element={<Inventory />} /> */}
           <Route path="/category" element={<Category />} />
           <Route path="/vendor" element={<Vendor />} />
         </Route>

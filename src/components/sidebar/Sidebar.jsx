@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMdHome } from "react-icons/io";
+import { AiFillProduct } from "react-icons/ai";
+import { MdProductionQuantityLimits } from "react-icons/md";
+import { MdOutlineInventory } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { FaBorderAll } from "react-icons/fa6";
-import { MdInventory } from "react-icons/md";
+import { FaHospitalUser } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
+// import { FaBorderAll } from "react-icons/fa6";
+// import { MdInventory } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdMenu } from "react-icons/io";
 import { Image } from "react-bootstrap";
@@ -31,13 +36,13 @@ const Sidebar = ({ children }) => {
       tab: "dashboard",
     },
     {
-      icon: <FaBorderAll />,
+      icon: <AiFillProduct />,
       redirect: "/product",
       label: "Product Management",
       tab: "product",
     },
     {
-      icon: <FaBorderAll />,
+      icon: <MdProductionQuantityLimits />,
       redirect: "/order",
       label: "Order Management",
       tab: "order",
@@ -45,23 +50,23 @@ const Sidebar = ({ children }) => {
   ];
 
   // Conditionally include the "Inventory Management" tab for admins
-  if (loggedUser && loggedUser.role === "admin") {
-    sidebarItems.push({
-      icon: <MdInventory />,
-      redirect: "/inventory",
-      label: "Inventory Management",
-      tab: "inventory",
-    });
+  if (loggedUser && loggedUser.role === "Admin") {
+    // sidebarItems.push({
+    //   icon: <MdInventory />,
+    //   redirect: "/inventory",
+    //   label: "Inventory Management",
+    //   tab: "inventory",
+    // });
 
     sidebarItems.push({
-      icon: <MdInventory />,
+      icon: <MdOutlineInventory />,
       redirect: "/category",
       label: "Category Management",
       tab: "category",
     });
 
     sidebarItems.push({
-      icon: <FaUser />,
+      icon: <FaHospitalUser />,
       redirect: "/vendor",
       label: "Vendor Management",
       tab: "vendor",
@@ -71,7 +76,7 @@ const Sidebar = ({ children }) => {
   // Conditionally include the "Customer Management" tab for admins and CSR
   if (
     loggedUser &&
-    (loggedUser.role === "admin" || loggedUser.role === "CSR")
+    (loggedUser.role === "Admin" || loggedUser.role === "CSR")
   ) {
     sidebarItems.push({
       icon: <FaUser />,
@@ -202,13 +207,7 @@ const Sidebar = ({ children }) => {
                     marginRight: "40px",
                   }}
                 >
-                  <img
-                    src="https://github.com/mdo.png"
-                    alt="hugenerd"
-                    width="30"
-                    height="30"
-                    className="rounded-circle"
-                  />
+                  <FaUserCircle size={45} />
 
                   <div className="d-flex-row mx-4">
                     <b className="d-none d-sm-inline ms-1">
